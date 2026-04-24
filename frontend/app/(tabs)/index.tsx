@@ -70,7 +70,7 @@ export default function Home() {
       contentContainerStyle={[{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }, webConstraint]}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.navy} />}
     >
-      {/* Top strip: Mumbai on left, theme toggle on right */}
+      {/* Top strip: Mumbai on left, theme slider toggle on right */}
       <View style={styles.topStrip}>
         <View style={styles.locationChip} testID="location-chip">
           <Ionicons name={weatherIcon() as any} size={16} color={colors.gold} />
@@ -79,10 +79,17 @@ export default function Home() {
         <View style={{ flex: 1 }} />
         <TouchableOpacity
           onPress={toggle}
-          style={styles.iconBtn}
+          style={styles.themePill}
           testID="theme-toggle"
+          accessibilityLabel="Toggle dark mode"
+          activeOpacity={0.8}
         >
-          <Ionicons name={mode === 'dark' ? 'sunny' : 'moon'} size={18} color={colors.navy} />
+          <View style={[styles.themeSide, mode === 'light' && styles.themeSideActive]}>
+            <Ionicons name="sunny" size={14} color={mode === 'light' ? colors.navy : colors.textMuted} />
+          </View>
+          <View style={[styles.themeSide, mode === 'dark' && styles.themeSideActive]}>
+            <Ionicons name="moon" size={13} color={mode === 'dark' ? colors.gold : colors.textMuted} />
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -184,6 +191,18 @@ const styles = StyleSheet.create({
     width: 38, height: 38, borderRadius: 19, backgroundColor: colors.white,
     borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center',
     ...shadow.card,
+  },
+  themePill: {
+    flexDirection: 'row', backgroundColor: colors.white, borderWidth: 1,
+    borderColor: colors.border, borderRadius: 999, padding: 3, gap: 2,
+    ...shadow.card,
+  },
+  themeSide: {
+    width: 32, height: 30, borderRadius: 999, alignItems: 'center', justifyContent: 'center',
+  },
+  themeSideActive: {
+    backgroundColor: colors.bg,
+    borderWidth: 1, borderColor: colors.border,
   },
   locationChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
