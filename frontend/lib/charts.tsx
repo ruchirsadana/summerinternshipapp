@@ -157,3 +157,63 @@ export const Heatmap: React.FC<{ cells: { hour: number; value: number }[]; maxVa
       </View>
     );
   };
+
+/** Radar / spider chart for rating N axes on a common 1..max scale. */
+export const RadarChart: React.FC<{
+  axes: { label: string; value: number }[];
+  max?: number; size?: number; color?: string;
+}> = ({ axes, max = 5, size = 280, color = colors.navy }) => {
+  const cx = size / 2, cy = size / 2;
+  const r = size / 2 - 30;
+  const n = axes.length || 1;
+  const angleFor = (i: number) => -Math.PI / 2 + (i / n) * Math.PI * 2;
+  const point = (i: number, v: number) => {
+    const a = angleFor(i);
+    const rr = (v / max) * r;
+    return { x: cx + rr * Math.cos(a), y: cy + rr * Math.sin(a) };
+  };
+  // concentric rings
+  const rings = [0.25, 0.5, 0.75, 1].map((k, i) => (
+    <Circle key={i} cx={cx} cy={cy} r={r * k} fill="none" stroke={colors.border} strokeWidth={1} />
+  ));
+  // axis spokes
+  const spokes = axes.map((_, i) => {
+    const a = angleFor(i);
+    return (
+      <Line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(a)} y2={cy + r * Math.sin(a)} stroke={colors.border} strokeWidth={1} />
+    );
+  });
+  // value polygon
+  const pts = axes.map((d, i) => point(i, Math.max(0, Math.min(max, d.value))));
+  const polygonD = pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ') + ' Z';
+  // labels
+  const labels = axes.map((d, i) => {
+    const a = angleFor(i);
+    const lx = cx + (r + 16) * Math.cos(a);
+    const ly = cy + (r + 16) * Math.sin(a);
+    const anchor = Math.cos(a) > 0.3 ? 'start' : Math.cos(a) < -0.3 ? 'end' : 'middle';
+    return (
+      <SvgText
+        key={i}
+        x={lx}
+        y={ly + 4}
+        fill={colors.textSecondary}
+        fontSize={10}
+        fontWeight="700"
+        textAnchor={anchor}
+      >
+        {d.label}
+      </SvgText>
+    );
+  });
+  return (
+    <View style={{ alignItems: 'center' }}>
+      <Svg width={size} height={size}>
+        <G>{rings}{spokes}</G>
+        <Path d={polygonD} fill={color} fillOpacity={0.25} stroke={color} strokeWidth={2} />
+        {pts.map((p, i) => <Circle key={i} cx={p.x} cy={p.y} r={3} fill={color} />)}
+        {labels}
+      </Svg>
+    </View>
+  );
+};

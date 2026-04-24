@@ -8,8 +8,9 @@ import { ScreenWrap, SectionTitle } from '../../lib/ui';
 
 const LINKS: { label: string; path: string; icon: string; color: string; desc: string }[] = [
   { label: 'All Responses', path: '/responses', icon: 'list', color: colors.navy, desc: 'Scrollable list + filters' },
-  { label: 'KPI Calculator', path: '/calculator', icon: 'calculator', color: colors.red, desc: 'ASP · ATV · UPT · LFL · Target back-solve' },
-  { label: 'Performance', path: '/performance', icon: 'trending-up', color: colors.gold, desc: 'Staff KPIs · leaderboard · LFL' },
+  { label: 'KPI Calculator', path: '/calculator', icon: 'calculator', color: colors.red, desc: 'ASP · ATV · UPT · LFL · Target · CLV' },
+  { label: 'Performance', path: '/performance', icon: 'trending-up', color: colors.gold, desc: 'Staff KPIs · leaderboard · big bills' },
+  { label: 'JOG Promo', path: '/jog-promo', icon: 'pricetag', color: colors.red, desc: 'Slab 1/2/3 redemptions · JOG sales' },
   { label: 'Dead Hour Tracker', path: '/dead-hours', icon: 'time', color: '#4F46E5', desc: 'Hourly conversion heatmap' },
   { label: 'Competitive Tracker', path: '/competitive', icon: 'git-compare', color: colors.navy, desc: 'Benchmark vs rivals' },
   { label: 'AI Insights Feed', path: '/insights', icon: 'sparkles', color: colors.red, desc: 'Auto-generated cards' },

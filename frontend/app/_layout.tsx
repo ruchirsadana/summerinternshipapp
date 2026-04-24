@@ -59,6 +59,7 @@ export default function RootLayout() {
           <Stack.Screen name="pipeline" options={{ title: 'B2B Pipeline' }} />
           <Stack.Screen name="export" options={{ title: 'Export & Reports' }} />
           <Stack.Screen name="calculator" options={{ title: 'KPI Calculator' }} />
+          <Stack.Screen name="jog-promo" options={{ title: 'JOG Promo' }} />
           <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         </Stack>
         </ThemeProvider>

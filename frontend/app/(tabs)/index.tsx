@@ -73,7 +73,7 @@ export default function Home() {
       {/* Top strip: Mumbai on left, theme slider toggle on right */}
       <View style={styles.topStrip}>
         <View style={styles.locationChip} testID="location-chip">
-          <Ionicons name={weatherIcon() as any} size={16} color={colors.gold} />
+          <Ionicons name="location-sharp" size={16} color={colors.gold} />
           <Text style={styles.locationText}>Mumbai</Text>
         </View>
         <View style={{ flex: 1 }} />

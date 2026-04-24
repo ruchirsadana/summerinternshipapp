@@ -188,3 +188,88 @@ export interface InsightCard {
   metric?: string | null;
   generatedAt?: string;
 }
+
+/* ---------- Visual Merchandising ---------- */
+export const VM_ZONES = [
+  'Window',
+  'Entrance',
+  'Denim',
+  'Apparel',
+  'Footwear',
+  'Fragrance',
+  'Accessories',
+  'Kids',
+  'Cash Wrap',
+  'Fitting Room',
+  'Back Wall',
+] as const;
+export type VMZone = typeof VM_ZONES[number];
+
+export const VM_ELEMENTS = [
+  'Window',
+  'Floor',
+  'Mannequins',
+  'Folding',
+  'Jiffy',
+  'Cross-Merch',
+  'Signage',
+  'Lighting',
+  'Cleanliness',
+  'Stock Density',
+  'Team Grooming',
+  'Reports',
+] as const;
+export type VMElement = typeof VM_ELEMENTS[number];
+
+export interface VMLog {
+  id: string;
+  createdAt: string;
+  date: string;           // YYYY-MM-DD
+  zone: VMZone | '';
+  whatChanged: string;
+  changedBy: string;
+  score: number;          // 1..5
+  beforePhoto?: string;   // base64 data URI
+  afterPhoto?: string;
+}
+
+export interface VMScorecard {
+  id: string;
+  createdAt: string;
+  date: string;
+  scores: Record<VMElement, number>; // 1..5 each
+  notes: string;
+}
+
+export interface ZoneSales {
+  id: string;
+  date: string;           // YYYY-MM-DD
+  zone: VMZone;
+  sale: number;           // ₹
+  sqft: number;           // store zone square feet
+}
+
+/* ---------- Big Bills (single-txn > ₹20,000) ---------- */
+export interface BigBill {
+  id: string;
+  createdAt: string;
+  date: string;
+  amount: number;
+  employeeId: string;     // id of employee from Employee[]
+  customerName: string;
+  items: string;          // short note / product summary
+}
+
+/* ---------- JOG Promo ---------- */
+export interface JogPromoEntry {
+  id: string;
+  createdAt: string;
+  date: string;
+  saleThroughJog: number;      // ₹ sales tagged to JOG
+  offersRedeemed: number;      // count of JOG vouchers used
+  slab1: number;               // count of ₹7,999 slab redemptions
+  slab2: number;               // count of ₹13,999 slab redemptions
+  slab3: number;               // count of ₹24,999 slab redemptions
+  notes: string;
+}
+export const JOG_SLAB_AMOUNTS = { slab1: 7999, slab2: 13999, slab3: 24999 } as const;

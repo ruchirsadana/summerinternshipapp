@@ -3,6 +3,7 @@ import type {
   Survey, CompetitorVisit, PerformanceEntry, Customer, DeadHourEntry,
   FieldNote, PipelineLead, Milestone, Settings, InsightCard,
   Employee, DailyKPI, LFLBaseline,
+  VMLog, VMScorecard, ZoneSales, BigBill, JogPromoEntry,
 } from './types';
 
 const KEYS = {
@@ -19,6 +20,12 @@ const KEYS = {
   employees: 'th.employees',
   dailyKpis: 'th.dailyKpis',
   lfl: 'th.lfl',
+  vmLogs: 'th.vmLogs',
+  vmScorecards: 'th.vmScorecards',
+  zoneSales: 'th.zoneSales',
+  bigBills: 'th.bigBills',
+  jog: 'th.jog',
+  storeSqft: 'th.storeSqft',
 } as const;
 
 async function getList<T>(key: string): Promise<T[]> {
@@ -159,6 +166,35 @@ export const store = {
     return raw ? JSON.parse(raw) : null;
   },
   setLFL: async (l: LFLBaseline) => AsyncStorage.setItem(KEYS.lfl, JSON.stringify(l)),
+
+  /* ---------- Visual Merchandising ---------- */
+  getVMLogs: () => getList<VMLog>(KEYS.vmLogs),
+  addVMLog: (v: VMLog) => addItem(KEYS.vmLogs, v),
+  deleteVMLog: (id: string) => deleteItem<VMLog>(KEYS.vmLogs, id),
+
+  getVMScorecards: () => getList<VMScorecard>(KEYS.vmScorecards),
+  addVMScorecard: (s: VMScorecard) => addItem(KEYS.vmScorecards, s),
+  deleteVMScorecard: (id: string) => deleteItem<VMScorecard>(KEYS.vmScorecards, id),
+
+  getZoneSales: () => getList<ZoneSales>(KEYS.zoneSales),
+  addZoneSale: (z: ZoneSales) => addItem(KEYS.zoneSales, z),
+  deleteZoneSale: (id: string) => deleteItem<ZoneSales>(KEYS.zoneSales, id),
+
+  getStoreSqft: async (): Promise<number> => {
+    const raw = await AsyncStorage.getItem(KEYS.storeSqft);
+    return raw ? parseFloat(raw) || 0 : 0;
+  },
+  setStoreSqft: async (n: number) => AsyncStorage.setItem(KEYS.storeSqft, String(n)),
+
+  /* ---------- Big Bills (>₹20K single txn) ---------- */
+  getBigBills: () => getList<BigBill>(KEYS.bigBills),
+  addBigBill: (b: BigBill) => addItem(KEYS.bigBills, b),
+  deleteBigBill: (id: string) => deleteItem<BigBill>(KEYS.bigBills, id),
+
+  /* ---------- JOG Promo ---------- */
+  getJogEntries: () => getList<JogPromoEntry>(KEYS.jog),
+  addJogEntry: (j: JogPromoEntry) => addItem(KEYS.jog, j),
+  deleteJogEntry: (id: string) => deleteItem<JogPromoEntry>(KEYS.jog, id),
 
   // Utility: full export
   getAll: async () => ({
