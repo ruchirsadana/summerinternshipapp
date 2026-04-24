@@ -1,0 +1,7 @@
+backend/
+tests/
+test_result.md
+memory/
+.emergent/
+/var/
+*.log

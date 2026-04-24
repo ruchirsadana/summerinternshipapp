@@ -1,10 +1,15 @@
 import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, TextInput,
-  ScrollView, ActivityIndicator, ViewStyle, TextStyle, StyleProp,
+  ScrollView, ActivityIndicator, ViewStyle, TextStyle, StyleProp, Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radius, shadow, font } from './theme';
+
+// Responsive: on desktop/iPad, centre content with max-width so it reads nicely
+export const webConstraint: ViewStyle = Platform.OS === 'web'
+  ? { maxWidth: 640, width: '100%', alignSelf: 'center' }
+  : {};
 
 export const Card: React.FC<{ children: React.ReactNode; style?: StyleProp<ViewStyle>; testID?: string }> =
   ({ children, style, testID }) => (
@@ -149,7 +154,7 @@ export const ProgressBar: React.FC<{ progress: number; color?: string }> = ({ pr
 );
 
 export const ScreenWrap: React.FC<{ children: React.ReactNode; refresh?: React.ReactNode }> = ({ children }) => (
-  <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }}>
+  <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={[{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }, webConstraint]}>
     {children}
   </ScrollView>
 );

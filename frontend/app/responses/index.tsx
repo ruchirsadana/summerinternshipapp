@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Platform } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, font, radius, spacing, shadow, npsColor } from '../../lib/theme';
@@ -54,7 +54,7 @@ export default function ResponsesList() {
       <FlatList
         data={filtered}
         keyExtractor={i => i.id}
-        contentContainerStyle={{ padding: 14, gap: 10, paddingBottom: 60 }}
+        contentContainerStyle={[{ padding: 14, gap: 10, paddingBottom: 60 }, Platform.OS === 'web' ? { maxWidth: 640, width: '100%', alignSelf: 'center' as const } : {}]}
         ListEmptyComponent={<View style={{ padding: 32 }}><EmptyState icon="document-text-outline" title="No responses" body="Change filters or submit surveys." /></View>}
         renderItem={({ item }) => (
           <TouchableOpacity

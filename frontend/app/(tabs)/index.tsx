@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Image, Platform } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { store } from '../../lib/storage';
 import { colors, font, spacing, radius, shadow } from '../../lib/theme';
-import { Card, PrimaryButton, ProgressBar, Stat } from '../../lib/ui';
+import { Card, PrimaryButton, ProgressBar, Stat, webConstraint } from '../../lib/ui';
 import { computeNPS, avgRatings, isToday } from '../../lib/analytics';
 import type { Survey, Settings } from '../../lib/types';
 
@@ -28,8 +28,8 @@ export default function Home() {
   const nps = computeNPS(surveys);
   const ratings = avgRatings(surveys);
   const todayCount = surveys.filter(s => isToday(s.createdAt)).length;
-  const target = settings?.target || 150;
-  const progress = surveys.length / target;
+  const target = settings?.target ?? 500;
+  const progress = settings ? surveys.length / target : 0;
   const topAttr = (() => {
     const e = Object.entries(ratings) as [keyof typeof ratings, number][];
     const sorted = e.sort((a, b) => b[1] - a[1]);
@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.bg }}
-      contentContainerStyle={{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }}
+      contentContainerStyle={[{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }, webConstraint]}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.navy} />}
     >
       {/* Hero */}
@@ -75,7 +75,7 @@ export default function Home() {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View>
             <Text style={{ color: colors.textSecondary, fontSize: 11, fontWeight: '700', letterSpacing: 0.8 }}>INTERNSHIP TARGET</Text>
-            <Text style={[font.h2, { color: colors.navy, marginTop: 4 }]}>{surveys.length} / {target}</Text>
+            <Text style={[font.h2, { color: colors.navy, marginTop: 4 }]}>{surveys.length} / {settings ? target : '—'}</Text>
           </View>
           <Text style={{ fontSize: 24, fontWeight: '800', color: colors.gold }}>{Math.round(progress * 100)}%</Text>
         </View>
