@@ -1,20 +1,47 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, Platform, Alert } from 'react-native';
+import { View, Text, Platform, Alert, StyleSheet } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Clipboard from 'expo-clipboard';
-import { colors, font } from '../lib/theme';
+import { colors, font, radius } from '../lib/theme';
 import { Card, ScreenWrap, PrimaryButton, SectionTitle } from '../lib/ui';
 import { store } from '../lib/storage';
 import { computeNPS, avgRatings, topWord, surveysInLastNDays } from '../lib/analytics';
 import type { Survey } from '../lib/types';
 
 const csvCell = (s: any) => `"${String(s ?? '').replace(/"/g, '""')}"`;
+const toCsv = (header: string[], rows: any[][]) =>
+  [header, ...rows].map(r => r.map(csvCell).join(',')).join('\n');
+
+const SURVEY_HEADER = [
+  'id','createdAt','ageGroup','gender','occupation','shoppingFrequency',
+  'unaidedRecall','brandAwareness','discoveryChannel','discoveryOther',
+  'word1','word2','word3',
+  'rating_quality','rating_style','rating_value','rating_prestige','rating_inStoreExperience','rating_staff',
+  'cmp_hugoBoss','cmp_calvinKlein','cmp_ralphLauren',
+  'visitReason','visitReasonOther','categories','spendBracket','purchaseBarrier',
+  'priorPurchase','nps','feedback',
+];
 
 export default function Export() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
-  useFocusEffect(useCallback(() => { store.getSurveys().then(setSurveys); }, []));
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  const loadCounts = useCallback(async () => {
+    const all = await store.getAll();
+    setSurveys(all.surveys);
+    setCounts({
+      surveys: all.surveys.length,
+      customers: all.customers.length,
+      performance: all.performance.length,
+      competitors: all.competitors.length,
+      deadHours: all.deadHours.length,
+      fieldNotes: all.fieldNotes.length,
+      pipeline: all.pipeline.length,
+    });
+  }, []);
+  useFocusEffect(useCallback(() => { loadCounts(); }, [loadCounts]));
 
   const nps = computeNPS(surveys);
   const weekly = surveysInLastNDays(surveys, 7);
@@ -36,70 +63,114 @@ export default function Export() {
     ].join('\n');
   })();
 
-  const exportCSV = async (shareMode: 'native' | 'whatsapp' | 'email' | 'copy') => {
-    const header = [
-      'id','createdAt','ageGroup','gender','occupation','shoppingFrequency',
-      'unaidedRecall','brandAwareness','discoveryChannel','discoveryOther',
-      'word1','word2','word3',
-      'rating_quality','rating_style','rating_value','rating_prestige','rating_inStoreExperience','rating_staff',
-      'cmp_hugoBoss','cmp_calvinKlein','cmp_ralphLauren',
-      'visitReason','visitReasonOther','categories','spendBracket','purchaseBarrier',
-      'priorPurchase','nps','feedback',
-    ];
-    const rows = surveys.map(s => [
-      s.id, s.createdAt, s.ageGroup, s.gender, s.occupation, s.shoppingFrequency,
-      s.unaidedRecall, s.brandAwareness.join('|'), s.discoveryChannel, s.discoveryOther,
-      s.word1, s.word2, s.word3,
-      s.ratings.quality, s.ratings.style, s.ratings.value, s.ratings.prestige, s.ratings.inStoreExperience, s.ratings.staff,
-      s.comparisons.hugoBoss, s.comparisons.calvinKlein, s.comparisons.ralphLauren,
-      s.visitReason, s.visitReasonOther, s.categories.join('|'), s.spendBracket, s.purchaseBarrier,
-      s.priorPurchase, s.nps, s.feedback,
-    ]);
-    const csv = [header, ...rows].map(r => r.map(csvCell).join(',')).join('\n');
-
-    if (shareMode === 'copy') {
-      await Clipboard.setStringAsync(csv);
-      Alert.alert('Copied', 'CSV copied to clipboard.');
-      return;
+  const buildCSVFor = async (kind: string): Promise<{ csv: string; filename: string }> => {
+    const all = await store.getAll();
+    switch (kind) {
+      case 'surveys': {
+        const rows = all.surveys.map(s => [
+          s.id, s.createdAt, s.ageGroup, s.gender, s.occupation, s.shoppingFrequency,
+          s.unaidedRecall, s.brandAwareness.join('|'), s.discoveryChannel, s.discoveryOther,
+          s.word1, s.word2, s.word3,
+          s.ratings.quality, s.ratings.style, s.ratings.value, s.ratings.prestige, s.ratings.inStoreExperience, s.ratings.staff,
+          s.comparisons.hugoBoss, s.comparisons.calvinKlein, s.comparisons.ralphLauren,
+          s.visitReason, s.visitReasonOther, s.categories.join('|'), s.spendBracket, s.purchaseBarrier,
+          s.priorPurchase, s.nps, s.feedback,
+        ]);
+        return { csv: toCsv(SURVEY_HEADER, rows), filename: `TH_surveys_${Date.now()}.csv` };
+      }
+      case 'customers': {
+        const rows = all.customers.map(c => [c.id, c.createdAt, c.name, c.phone, c.ageGroup, c.categoryPrefs.join('|'), c.spendBracket, c.birthdayMonth, c.visitDate, c.purchaseCount, c.totalSpend, c.notes]);
+        return { csv: toCsv(['id','createdAt','name','phone','ageGroup','categoryPrefs','spendBracket','birthdayMonth','visitDate','purchaseCount','totalSpend','notes'], rows), filename: `TH_customers_${Date.now()}.csv` };
+      }
+      case 'performance': {
+        const rows = all.performance.map(p => [p.id, p.date, p.bills, p.units, p.asp, p.atv, p.upt]);
+        return { csv: toCsv(['id','date','bills','units','asp','atv','upt'], rows), filename: `TH_performance_${Date.now()}.csv` };
+      }
+      case 'competitors': {
+        const rows = all.competitors.map(c => [c.id, c.createdAt, c.storeName, c.visitDate, c.vmScore, c.staffScore, c.productRangeScore, c.footfall, c.pricePoint, c.observation]);
+        return { csv: toCsv(['id','createdAt','storeName','visitDate','vmScore','staffScore','productRangeScore','footfall','pricePoint','observation'], rows), filename: `TH_competitors_${Date.now()}.csv` };
+      }
+      case 'deadHours': {
+        const rows = all.deadHours.map(d => [d.id, d.date, d.hour, d.footfall, d.bills, d.activation]);
+        return { csv: toCsv(['id','date','hour','footfall','bills','activation'], rows), filename: `TH_deadhours_${Date.now()}.csv` };
+      }
+      case 'fieldNotes': {
+        const rows = all.fieldNotes.map(n => [n.id, n.createdAt, n.date, n.observation, n.idea, n.anomaly]);
+        return { csv: toCsv(['id','createdAt','date','observation','idea','anomaly'], rows), filename: `TH_fieldnotes_${Date.now()}.csv` };
+      }
+      case 'pipeline': {
+        const rows = all.pipeline.map(l => [l.id, l.createdAt, l.company, l.contact, l.designation, l.requirement, l.estValue, l.status, l.notes]);
+        return { csv: toCsv(['id','createdAt','company','contact','designation','requirement','estValue','status','notes'], rows), filename: `TH_pipeline_${Date.now()}.csv` };
+      }
+      case 'all': {
+        const bundle: string[] = [];
+        for (const k of ['surveys','customers','performance','competitors','deadHours','fieldNotes','pipeline'] as const) {
+          const { csv } = await buildCSVFor(k);
+          bundle.push(`===== ${k.toUpperCase()} =====\n${csv}\n`);
+        }
+        return { csv: bundle.join('\n'), filename: `TH_everything_${Date.now()}.csv` };
+      }
+      default:
+        return { csv: '', filename: 'empty.csv' };
     }
+  };
+
+  const shareCSV = async (kind: string) => {
+    const { csv, filename } = await buildCSVFor(kind);
+    if (!csv) { Alert.alert('Nothing to export'); return; }
     try {
       if (Platform.OS === 'web') {
-        // Web fallback: trigger download
+        // eslint-disable-next-line no-undef
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = `TH_surveys_${Date.now()}.csv`; a.click();
+        a.href = url; a.download = filename; a.click();
         URL.revokeObjectURL(url);
         return;
       }
-      const dir = (FileSystem as any).documentDirectory || (FileSystem as any).cacheDirectory;
-      const path = `${dir}TH_surveys_${Date.now()}.csv`;
+      const dir = (FileSystem as any).cacheDirectory || (FileSystem as any).documentDirectory;
+      const path = `${dir}${filename}`;
       await FileSystem.writeAsStringAsync(path, csv);
-      const avail = await Sharing.isAvailableAsync();
-      if (avail) {
-        await Sharing.shareAsync(path, {
-          mimeType: 'text/csv', dialogTitle: 'Share Surveys CSV',
-          UTI: 'public.comma-separated-values-text',
-        });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(path, { mimeType: 'text/csv', dialogTitle: `Share ${filename}`, UTI: 'public.comma-separated-values-text' });
       } else {
         Alert.alert('Saved', `File saved to ${path}`);
       }
     } catch (e: any) {
-      Alert.alert('Export failed', e.message || 'Unknown error');
+      Alert.alert('Export failed', e.message || String(e));
     }
+  };
+
+  const copyCSV = async (kind: string) => {
+    const { csv } = await buildCSVFor(kind);
+    if (!csv) { Alert.alert('Nothing to export'); return; }
+    await Clipboard.setStringAsync(csv);
+    Alert.alert('Copied', `${kind} CSV copied to clipboard.`);
   };
 
   const shareReport = async () => {
     try {
-      if (Platform.OS === 'web') { await Clipboard.setStringAsync(weeklyReport); Alert.alert('Copied', 'Report copied.'); return; }
+      if (Platform.OS === 'web') {
+        await Clipboard.setStringAsync(weeklyReport);
+        Alert.alert('Copied', 'Report copied to clipboard.');
+        return;
+      }
       const dir = (FileSystem as any).cacheDirectory || (FileSystem as any).documentDirectory;
       const path = `${dir}TH_weekly_report_${Date.now()}.txt`;
       await FileSystem.writeAsStringAsync(path, weeklyReport);
       if (await Sharing.isAvailableAsync()) await Sharing.shareAsync(path);
-    } catch (e: any) {
-      Alert.alert('Share failed', e.message);
-    }
+    } catch (e: any) { Alert.alert('Share failed', e.message); }
   };
+
+  const DATASETS: { key: string; label: string; icon: any }[] = [
+    { key: 'surveys', label: 'Consumer Surveys', icon: 'document-text' },
+    { key: 'customers', label: 'Customer Database', icon: 'people' },
+    { key: 'performance', label: 'My Performance', icon: 'trending-up' },
+    { key: 'competitors', label: 'Competitor Visits', icon: 'git-compare' },
+    { key: 'deadHours', label: 'Dead Hours', icon: 'time' },
+    { key: 'fieldNotes', label: 'Field Notes', icon: 'book' },
+    { key: 'pipeline', label: 'B2B Pipeline', icon: 'briefcase' },
+  ];
 
   return (
     <ScreenWrap>
@@ -110,12 +181,24 @@ export default function Export() {
       </Card>
 
       <Card>
-        <SectionTitle title="Export Surveys (CSV)" subtitle="Share via any app" />
-        <View style={{ gap: 10 }}>
-          <PrimaryButton label="Share Sheet" icon="share" variant="accent" onPress={() => exportCSV('native')} testID="export-native" />
-          <PrimaryButton label="Copy CSV" icon="copy" variant="outline" onPress={() => exportCSV('copy')} testID="export-copy" />
-          {Platform.OS === 'web' && <PrimaryButton label="Download CSV" icon="download" onPress={() => exportCSV('native')} testID="export-download" />}
+        <SectionTitle title="Export Everything" subtitle="All 7 datasets in a single CSV bundle" />
+        <View style={{ gap: 8 }}>
+          <PrimaryButton label="Share All Data" icon="share" variant="accent" onPress={() => shareCSV('all')} testID="export-all-share" />
+          <PrimaryButton label="Copy All (CSV)" icon="copy" variant="outline" onPress={() => copyCSV('all')} testID="export-all-copy" />
         </View>
+      </Card>
+
+      <Card>
+        <SectionTitle title="Export Individual Dataset" subtitle="Tap any dataset below" />
+        {DATASETS.map(d => (
+          <View key={d.key} style={styles.row}>
+            <View style={{ flex: 1 }}>
+              <Text style={[font.h3, { color: colors.navy }]}>{d.label}</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{counts[d.key] ?? 0} record{(counts[d.key] ?? 0) === 1 ? '' : 's'}</Text>
+            </View>
+            <PrimaryButton label="Share" icon="share-social" onPress={() => shareCSV(d.key)} testID={`export-${d.key}-share`} style={{ paddingHorizontal: 14, minHeight: 42 }} />
+          </View>
+        ))}
       </Card>
 
       <Card>
@@ -125,6 +208,23 @@ export default function Export() {
         </View>
         <PrimaryButton label="Share Report" icon="share-social" onPress={shareReport} testID="share-report" style={{ marginTop: 10 }} />
       </Card>
+
+      <Card>
+        <SectionTitle title="Where is my data stored?" />
+        <Text style={{ color: colors.textSecondary, fontSize: 13, lineHeight: 20 }}>
+          All your data is stored <Text style={{ fontWeight: '800', color: colors.navy }}>locally on this device</Text> using AsyncStorage — nothing is sent to any server except when you tap "Generate AI Insights". Uninstalling the app or clearing browser data will wipe everything.
+        </Text>
+        <Text style={{ color: colors.textSecondary, fontSize: 13, lineHeight: 20, marginTop: 6 }}>
+          <Text style={{ fontWeight: '800' }}>Recommendation</Text>: Use "Share All Data" above weekly and save the CSV to email or Drive as a backup.
+        </Text>
+      </Card>
     </ScreenWrap>
   );
 }
+
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.borderLight,
+  },
+});

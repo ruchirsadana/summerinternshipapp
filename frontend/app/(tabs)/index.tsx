@@ -51,7 +51,9 @@ export default function Home() {
     >
       {/* Hero */}
       <View style={styles.hero} testID="home-hero">
-        <Image source={{ uri: TH_LOGO_URL }} style={styles.logo} resizeMode="contain" />
+        <View style={styles.logoWrap}>
+          <Image source={{ uri: TH_LOGO_URL }} style={styles.logoImg} resizeMode="cover" />
+        </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.heroSub}>Welcome{settings?.internName ? `, ${settings.internName}` : ''}</Text>
           <Text style={styles.heroTitle}>TH Field Intelligence</Text>
@@ -132,7 +134,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.navy, borderRadius: radius.xl, padding: spacing.lg, gap: 14,
     flexDirection: 'row', alignItems: 'center', ...shadow.elevated,
   },
-  logo: { width: 68, height: 68, borderRadius: 10, backgroundColor: colors.white },
+  logoWrap: {
+    width: 68, height: 68, borderRadius: 10, overflow: 'hidden',
+    backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center',
+  },
+  logoImg: { width: '150%', height: '150%' },
   heroSub: { color: '#AAB5CE', fontSize: 12, fontWeight: '600', letterSpacing: 1 },
   heroTitle: { color: colors.white, fontSize: 22, fontWeight: '800', marginTop: 2, letterSpacing: -0.3 },
   heroStore: { color: colors.gold, fontSize: 14, fontWeight: '800', marginTop: 4, letterSpacing: 0.3 },

@@ -104,17 +104,18 @@ export const store = {
     const raw = await AsyncStorage.getItem(KEYS.settings);
     if (raw) {
       const parsed = JSON.parse(raw) as Settings;
+      let changed = false;
       // Migrate old default store name
-      if (parsed.storeName === 'Tommy Hilfiger') {
-        parsed.storeName = 'Tommy Hilfiger BKC';
-        await AsyncStorage.setItem(KEYS.settings, JSON.stringify(parsed));
-      }
+      if (parsed.storeName === 'Tommy Hilfiger') { parsed.storeName = 'Tommy Hilfiger BKC'; changed = true; }
+      // Migrate old default target
+      if (parsed.target === 150) { parsed.target = 500; changed = true; }
+      if (changed) await AsyncStorage.setItem(KEYS.settings, JSON.stringify(parsed));
       return parsed;
     }
     const def: Settings = {
       internName: '',
       storeName: 'Tommy Hilfiger BKC',
-      target: 150,
+      target: 500,
       startDate: new Date().toISOString().slice(0, 10),
     };
     await AsyncStorage.setItem(KEYS.settings, JSON.stringify(def));

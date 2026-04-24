@@ -34,7 +34,9 @@ export default function Presentation() {
   return (
     <ScreenWrap>
       <View style={styles.hero}>
-        <Image source={{ uri: TH_LOGO_URL }} style={styles.logo} resizeMode="contain" />
+        <View style={styles.logoWrap}>
+          <Image source={{ uri: TH_LOGO_URL }} style={styles.logoImg} resizeMode="cover" />
+        </View>
         <Text style={{ color: colors.white, fontSize: 24, fontWeight: '800', marginTop: 16 }}>{settings?.storeName || 'Tommy Hilfiger BKC'}</Text>
         <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700', marginTop: 4 }}>Internship Snapshot · {settings?.internName || 'Field Intern'}</Text>
       </View>
@@ -78,6 +80,7 @@ export default function Presentation() {
 
 const styles = StyleSheet.create({
   hero: { backgroundColor: colors.navy, borderRadius: radius.xl, padding: 24, alignItems: 'center', ...shadow.elevated },
-  logo: { width: 96, height: 96, borderRadius: 12, backgroundColor: colors.white },
+  logoWrap: { width: 96, height: 96, borderRadius: 12, overflow: 'hidden', backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' },
+  logoImg: { width: '150%', height: '150%' },
   caption: { fontSize: 11, fontWeight: '800', color: colors.textSecondary, letterSpacing: 0.8 },
 });
