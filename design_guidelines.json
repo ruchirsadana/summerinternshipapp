@@ -1,0 +1,205 @@
+{
+  "theme_and_archetype": {
+    "domain": "Retail / Business Intelligence",
+    "theme": "Light",
+    "archetype": "Hybrid: Swiss Clarity (Archetype 4) + Jewel & Luxury (Archetype 5)",
+    "description": "A premium luxury-feel React Native mobile app bridging data-dense utility with Tommy Hilfiger's iconic brand identity. Focuses on clarity, generous spacing, white structural cards with refined subtle shadows, and striking brand-color accents."
+  },
+  "color_palette": {
+    "brand": {
+      "navy": "#1B2A4A",
+      "red": "#C8102E",
+      "white": "#FFFFFF"
+    },
+    "background": {
+      "app_bg": "#F8F9FA",
+      "card_bg": "#FFFFFF",
+      "header_bg": "#1B2A4A"
+    },
+    "text": {
+      "primary": "#111827",
+      "secondary": "#6B7280",
+      "inverse": "#FFFFFF",
+      "brand_navy": "#1B2A4A"
+    },
+    "luxury_accents": {
+      "gold": "#D4AF37",
+      "cream": "#FDFBF7"
+    },
+    "tier_badges": {
+      "gold": "#D4AF37",
+      "silver": "#C0C0C0",
+      "bronze": "#CD7F32"
+    },
+    "nps_status": {
+      "red_detractor": "#FF3B30",
+      "yellow_passive": "#FFCC00",
+      "green_promoter": "#34C759"
+    },
+    "charts": [
+      "#1B2A4A",
+      "#C8102E",
+      "#D4AF37",
+      "#9CA3AF",
+      "#E5E7EB"
+    ]
+  },
+  "typography": {
+    "font_family": "Inter, Arial",
+    "hierarchy": {
+      "h1": {
+        "size": "32px",
+        "weight": "700",
+        "letter_spacing": "-0.02em"
+      },
+      "h2": {
+        "size": "24px",
+        "weight": "700",
+        "letter_spacing": "-0.01em"
+      },
+      "h3": {
+        "size": "18px",
+        "weight": "600",
+        "letter_spacing": "0em"
+      },
+      "body": {
+        "size": "16px",
+        "weight": "400",
+        "letter_spacing": "0em",
+        "line_height": "24px"
+      },
+      "caption": {
+        "size": "12px",
+        "weight": "500",
+        "letter_spacing": "0.05em",
+        "text_transform": "uppercase"
+      }
+    }
+  },
+  "spacing_and_layout": {
+    "grid_system": "Mobile-first, flexible column, 16px horizontal margins",
+    "tokens": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "16px",
+      "lg": "24px",
+      "xl": "32px",
+      "xxl": "48px"
+    },
+    "surface_styles": {
+      "card": {
+        "background_color": "#FFFFFF",
+        "border_radius": "12px",
+        "padding": "16px",
+        "shadow": "0px 4px 12px rgba(27, 42, 74, 0.06)",
+        "elevation": 2
+      },
+      "header": {
+        "background_color": "#1B2A4A",
+        "text_color": "#FFFFFF",
+        "padding_vertical": "16px",
+        "border_bottom": "none"
+      }
+    }
+  },
+  "components": {
+    "bottom_tab_bar": {
+      "structure": [
+        {"name": "Home", "icon": "home", "stack": "Dashboard, Brand Health"},
+        {"name": "Customers", "icon": "users", "stack": "Tiered Database, Pipeline"},
+        {"name": "Survey", "icon": "plus-circle", "stack": "New Survey, Field Notes"},
+        {"name": "Analytics", "icon": "bar-chart-2", "stack": "Analytics Dashboard, Heatmap, Competitive"},
+        {"name": "Menu", "icon": "menu", "stack": "Performance, Presentation Mode, Export, Settings"}
+      ],
+      "styling": {
+        "background": "#FFFFFF",
+        "active_tint": "#1B2A4A",
+        "inactive_tint": "#9CA3AF",
+        "border_top": "1px solid #E5E7EB"
+      }
+    },
+    "buttons": {
+      "primary": {
+        "background": "#1B2A4A",
+        "text": "#FFFFFF",
+        "border_radius": "8px",
+        "min_height": "48px",
+        "font_weight": "600"
+      },
+      "accent": {
+        "background": "#C8102E",
+        "text": "#FFFFFF",
+        "border_radius": "8px",
+        "min_height": "48px",
+        "font_weight": "600"
+      },
+      "secondary_outline": {
+        "background": "transparent",
+        "border": "1px solid #1B2A4A",
+        "text": "#1B2A4A",
+        "border_radius": "8px",
+        "min_height": "48px",
+        "font_weight": "600"
+      }
+    },
+    "forms": {
+      "input": {
+        "border": "1px solid #E5E7EB",
+        "border_radius": "8px",
+        "background": "#FFFFFF",
+        "min_height": "48px",
+        "padding": "12px"
+      },
+      "progress_bar": {
+        "track": "#E5E7EB",
+        "fill": "#1B2A4A",
+        "height": "4px",
+        "border_radius": "2px"
+      }
+    },
+    "data_visualization": {
+      "libraries_recommended": ["victory-native", "lucide-react-native"],
+      "nps_slider": {
+        "track_gradient": ["#FF3B30", "#FFCC00", "#34C759"],
+        "thumb": "#FFFFFF with subtle shadow"
+      },
+      "dead_hour_heatmap": {
+        "color_scale": ["#E0E7FF", "#C7D2FE", "#818CF8", "#4F46E5", "#1B2A4A"],
+        "cell_radius": "4px"
+      }
+    }
+  },
+  "media": {
+    "image_urls": [
+      {
+        "category": "hero_home",
+        "url": "https://images.unsplash.com/photo-1769981653696-5ce5a59263bf?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwyfHxsdXh1cnklMjBmYXNoaW9uJTIwYm91dGlxdWUlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzcwMzMwOTd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Luxury Celine/premium fashion store interior, perfect as a header or hero background card for Presentation Mode or Home."
+      },
+      {
+        "category": "empty_state_analytics",
+        "url": "https://static.prod-images.emergentagent.com/jobs/e97e9dde-ec8c-4fe7-b26f-260092fe93f9/images/eb76fafb54ddd47de878022d2afb530941225a638d139432ee21ce101f3c2075.png",
+        "description": "Minimalist 3D render of an elegant floating line chart on a white pedestal, for empty states in Analytics."
+      },
+      {
+        "category": "empty_state_clipboard",
+        "url": "https://static.prod-images.emergentagent.com/jobs/e97e9dde-ec8c-4fe7-b26f-260092fe93f9/images/0d194b623639b5e043e4f40e424a0a4b067ef5def6217b6289bb4f53ecbbaa2d.png",
+        "description": "Minimalist 3D render of a premium clipboard for empty survey states or empty notes."
+      },
+      {
+        "category": "boutique_background",
+        "url": "https://images.unsplash.com/photo-1765009433753-c7462637d21f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBmYXNoaW9uJTIwYm91dGlxdWUlMjBpbnRlcmlvcnxlbnwwfHx8fDE3NzcwMzMwOTd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Colorful garments on display in a modern premium store, usable for AI Insights background cards."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Build this app using React Native EXPO (with React Native component styling).",
+    "Apply the exact Brand Colors (Navy #1B2A4A, Red #C8102E, White #FFFFFF) heavily. Headers should strictly be Navy.",
+    "Utilize victory-native for all charts, specifically leveraging custom color scales derived from the brand palette above.",
+    "Implement the 16 screens using a nested Stack + Bottom Tab navigation architecture (5 bottom tabs).",
+    "Ensure all touch targets (buttons, inputs) are at least 48px in height for mobile usability.",
+    "Cards must have subtle shadows (`shadow-sm` equivalent in RN) against a light grey (`#F8F9FA`) background to achieve the 'clean white cards' luxury look.",
+    "All interactive elements MUST include `testID` attribute (React Native equivalent of `data-testid`)."
+  ]
+}
