@@ -17,14 +17,14 @@ const LIGHT = {
 };
 
 const DARK = {
-  navy: '#E2E8F5', navyDark: '#F4F6FB', red: '#F87171', white: '#0B1220',
+  navy: '#F5F7FB', navyDark: '#FFFFFF', red: '#F87171', white: '#0B1220',
   bg: '#0B1220', cardBg: '#1A2236',
-  textPrimary: '#F3F4F6', textSecondary: '#C4CCDE', textMuted: '#8A93A8',
+  textPrimary: '#F8FAFC', textSecondary: '#D1D5DB', textMuted: '#9CA3AF',
   border: '#2A3348', borderLight: '#222B3E',
   gold: '#F5C94D', cream: '#1E2739', silver: '#C0C8DA', bronze: '#E8A979', platinum: '#B6C1DA',
   npsRed: '#F87171', npsYellow: '#FBBF24', npsGreen: '#34D399',
   success: '#34D399', warning: '#F59E0B',
-  chart: ['#E2E8F5', '#F87171', '#F5C94D', '#C4CCDE', '#34D399', '#FBBF24'],
+  chart: ['#F5F7FB', '#F87171', '#F5C94D', '#D1D5DB', '#34D399', '#FBBF24'],
 };
 
 type Ctx = { mode: Mode; colors: typeof LIGHT; toggle: () => void };
@@ -71,14 +71,26 @@ body { color-scheme: dark; }
 [style*="color:#9CA3AF"],
 [style*="color: #9CA3AF"] { color: ${DARK.textMuted} !important; }
 
-/* Navy text (brand): brighten slightly so it reads on dark */
+/* Navy text (brand — headings, emphasis, card titles) → near-white */
 [style*="color: rgb(27, 42, 74)"],
 [style*="color:#1B2A4A"],
 [style*="color: #1B2A4A"] { color: ${DARK.navy} !important; }
 
+/* Dark text (used for strong emphasis and values) */
+[style*="color: rgb(15, 23, 42)"],
+[style*="color: rgb(15, 26, 48)"],
+[style*="color:#0F1A30"],
+[style*="color: #0F1A30"] { color: ${DARK.navy} !important; }
+
+/* AAB5CE (hero subtitle color) → slightly muted but readable */
+[style*="color: rgb(170, 181, 206)"] { color: ${DARK.textSecondary} !important; }
+
 /* Light borders become subtle dark borders */
 [style*="border-color: rgb(229, 231, 235)"],
 [style*="border-color: rgb(241, 243, 246)"] { border-color: ${DARK.border} !important; }
+
+/* Bottom tab bar & navigation bars */
+[style*="border-top-color: rgb(229, 231, 235)"] { border-top-color: ${DARK.border} !important; }
 
 /* Input placeholder/text color contrast */
 input, textarea { color: ${DARK.textPrimary} !important; }
