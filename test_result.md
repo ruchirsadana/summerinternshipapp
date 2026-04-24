@@ -101,3 +101,37 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "TH Field Intelligence — Expo survey + analytics app. Fix dark mode across all screens (cards were white with white text; inputs white; tab bar light)."
+
+frontend:
+  - task: "Dark mode across all 15 screens (web)"
+    implemented: true
+    working: true
+    file: "frontend/lib/themeContext.tsx, frontend/lib/ui.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "Cards (Internship Target, Quick Access, More menu rows, inputs) rendered white with white/silver text in dark mode."
+      - working: true
+        agent: "main"
+        comment: "Root cause: (1) ui.tsx used useTheme() without importing it → runtime crash. (2) StyleSheet.create styles become RN Web atomic CSS classes (e.g. .r-backgroundColor-14lw9ot) — the old inline-style selector CSS never matched them. Fix: imported useTheme in ui.tsx; rewrote themeContext.tsx to scan the react-native-stylesheet <style> tag, build !important overrides for every class whose value maps to our light palette, and hook a MutationObserver so classes added on later route navigations also get overridden. Verified via Playwright screenshots across Home, More, Survey, Calculator, Performance, Brand Health, Competitive, Settings, Insights, Leads, Analytics, Field Notes, Dead Hours, Pipeline, Export, Presentation, Occasion Mapper — all render with proper dark card (#1A2236) backgrounds and readable text. Inputs and textareas flip to dark bg with lightened placeholder. Light mode unaffected."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus: []
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Dark mode comprehensive fix applied in lib/themeContext.tsx + lib/ui.tsx. Verified visually across all 15+ screens on web (390x844). No automated test changes needed — purely visual/UI. Ready for user verification."

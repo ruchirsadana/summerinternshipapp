@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, font, radius, shadow } from '../../lib/theme';
+import { useTheme } from '../../lib/themeContext';
 import { ScreenWrap, SectionTitle } from '../../lib/ui';
 
 const LINKS: { label: string; path: string; icon: string; color: string; desc: string }[] = [
@@ -23,6 +24,7 @@ const LINKS: { label: string; path: string; icon: string; color: string; desc: s
 
 export default function More() {
   const router = useRouter();
+  const { colors: t } = useTheme();
   return (
     <ScreenWrap>
       <SectionTitle title="Workspace" subtitle="All screens in one tap" />
@@ -32,16 +34,16 @@ export default function More() {
           testID={`menu-${l.label.toLowerCase().replace(/\s+/g, '-')}`}
           activeOpacity={0.8}
           onPress={() => router.push(l.path as any)}
-          style={styles.row}
+          style={[styles.row, { backgroundColor: t.cardBg }]}
         >
           <View style={[styles.icon, { backgroundColor: l.color }]}>
             <Ionicons name={l.icon as any} size={20} color={colors.white} />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[font.h3, { color: colors.navy }]}>{l.label}</Text>
-            <Text style={{ color: colors.textSecondary, fontSize: 13, marginTop: 2 }}>{l.desc}</Text>
+            <Text style={[font.h3, { color: t.navy }]}>{l.label}</Text>
+            <Text style={{ color: t.textSecondary, fontSize: 13, marginTop: 2 }}>{l.desc}</Text>
           </View>
-          <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+          <Ionicons name="chevron-forward" size={20} color={t.textMuted} />
         </TouchableOpacity>
       ))}
     </ScreenWrap>

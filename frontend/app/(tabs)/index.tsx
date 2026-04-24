@@ -32,7 +32,7 @@ const weatherIcon = () => {
 
 export default function Home() {
   const router = useRouter();
-  const { mode, toggle } = useTheme();
+  const { mode, toggle, colors: t } = useTheme();
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -145,12 +145,12 @@ export default function Home() {
             testID={`quick-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
             activeOpacity={0.8}
             onPress={() => router.push(link.path as any)}
-            style={styles.quickCard}
+            style={[styles.quickCard, { backgroundColor: t.cardBg }]}
           >
             <View style={[styles.quickIcon, { backgroundColor: link.color }]}>
-              <Ionicons name={link.icon as any} size={22} color={colors.white} />
+              <Ionicons name={link.icon as any} size={22} color="#FFFFFF" />
             </View>
-            <Text style={styles.quickLabel}>{link.label}</Text>
+            <Text style={[styles.quickLabel, { color: t.navy }]}>{link.label}</Text>
           </TouchableOpacity>
         ))}
       </View>

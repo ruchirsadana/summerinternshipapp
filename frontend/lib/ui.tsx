@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, radius, shadow, font } from './theme';
+import { useTheme } from './themeContext';
 
 // Responsive: on desktop/iPad, centre content with max-width so it reads nicely
 export const webConstraint: ViewStyle = Platform.OS === 'web'
@@ -12,9 +13,12 @@ export const webConstraint: ViewStyle = Platform.OS === 'web'
   : {};
 
 export const Card: React.FC<{ children: React.ReactNode; style?: StyleProp<ViewStyle>; testID?: string }> =
-  ({ children, style, testID }) => (
-    <View testID={testID} style={[styles.card, style]}>{children}</View>
-  );
+  ({ children, style, testID }) => {
+    const { colors: t } = useTheme();
+    return (
+      <View testID={testID} style={[styles.card, { backgroundColor: t.cardBg }, style]}>{children}</View>
+    );
+  };
 
 export const SectionTitle: React.FC<{ title: string; subtitle?: string; right?: React.ReactNode }> =
   ({ title, subtitle, right }) => (
@@ -140,12 +144,15 @@ export const Chip: React.FC<{ label: string; tone?: 'navy' | 'red' | 'gold' | 'm
   };
 
 export const Stat: React.FC<{ label: string; value: string | number; accent?: string; testID?: string }> =
-  ({ label, value, accent, testID }) => (
-    <View testID={testID} style={[styles.card, { flex: 1, alignItems: 'flex-start' }]}>
-      <Text style={styles.caption}>{label}</Text>
-      <Text style={[font.h2, { color: accent || colors.navy, marginTop: 4 }]}>{value}</Text>
-    </View>
-  );
+  ({ label, value, accent, testID }) => {
+    const { colors: t } = useTheme();
+    return (
+      <View testID={testID} style={[styles.card, { flex: 1, alignItems: 'flex-start', backgroundColor: t.cardBg }]}>
+        <Text style={[styles.caption, { color: t.textSecondary }]}>{label}</Text>
+        <Text style={[font.h2, { color: accent || t.navy, marginTop: 4 }]}>{value}</Text>
+      </View>
+    );
+  };
 
 export const ProgressBar: React.FC<{ progress: number; color?: string }> = ({ progress, color }) => (
   <View style={styles.progressTrack}>
@@ -153,11 +160,14 @@ export const ProgressBar: React.FC<{ progress: number; color?: string }> = ({ pr
   </View>
 );
 
-export const ScreenWrap: React.FC<{ children: React.ReactNode; refresh?: React.ReactNode }> = ({ children }) => (
-  <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={[{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }, webConstraint]}>
-    {children}
-  </ScrollView>
-);
+export const ScreenWrap: React.FC<{ children: React.ReactNode; refresh?: React.ReactNode }> = ({ children }) => {
+  const { colors: t } = useTheme();
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: t.bg }} contentContainerStyle={[{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }, webConstraint]}>
+      {children}
+    </ScrollView>
+  );
+};
 
 export const EmptyState: React.FC<{ icon: React.ComponentProps<typeof Ionicons>['name']; title: string; body?: string }> =
   ({ icon, title, body }) => (
