@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {
   Survey, CompetitorVisit, PerformanceEntry, Customer, DeadHourEntry,
   FieldNote, PipelineLead, Milestone, Settings, InsightCard,
+  Employee, DailyKPI, LFLBaseline,
 } from './types';
 
 const KEYS = {
@@ -15,6 +16,9 @@ const KEYS = {
   milestones: 'th.milestones',
   settings: 'th.settings',
   insights: 'th.insights',
+  employees: 'th.employees',
+  dailyKpis: 'th.dailyKpis',
+  lfl: 'th.lfl',
 } as const;
 
 async function getList<T>(key: string): Promise<T[]> {
@@ -128,6 +132,32 @@ export const store = {
   // Insights cache
   getInsights: () => getList<InsightCard>(KEYS.insights),
   setInsights: (ins: InsightCard[]) => setList(KEYS.insights, ins),
+
+  // Employees
+  getEmployees: async (): Promise<Employee[]> => {
+    const list = await getList<Employee>(KEYS.employees);
+    if (list.length) return list;
+    const seed: Employee[] = ['Hannan', 'Priyanka', 'Ankita', 'Suhani', 'Aditya', 'Adarsh', 'Muskan', 'Ruchir', 'Harry', 'Somi']
+      .map((name, i) => ({ id: `emp-${i}-${Date.now()}`, name, active: true, createdAt: new Date().toISOString() }));
+    await setList(KEYS.employees, seed);
+    return seed;
+  },
+  addEmployee: (e: Employee) => addItem(KEYS.employees, e),
+  updateEmployee: (id: string, patch: Partial<Employee>) => updateItem<Employee>(KEYS.employees, id, patch),
+  deleteEmployee: (id: string) => deleteItem<Employee>(KEYS.employees, id),
+
+  // Daily KPIs (sale/bill/qty per employee per day)
+  getDailyKpis: () => getList<DailyKPI>(KEYS.dailyKpis),
+  addDailyKpi: (k: DailyKPI) => addItem(KEYS.dailyKpis, k),
+  updateDailyKpi: (id: string, patch: Partial<DailyKPI>) => updateItem<DailyKPI>(KEYS.dailyKpis, id, patch),
+  deleteDailyKpi: (id: string) => deleteItem<DailyKPI>(KEYS.dailyKpis, id),
+
+  // LFL baseline (manual prior-year entry)
+  getLFL: async (): Promise<LFLBaseline | null> => {
+    const raw = await AsyncStorage.getItem(KEYS.lfl);
+    return raw ? JSON.parse(raw) : null;
+  },
+  setLFL: async (l: LFLBaseline) => AsyncStorage.setItem(KEYS.lfl, JSON.stringify(l)),
 
   // Utility: full export
   getAll: async () => ({

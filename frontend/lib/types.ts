@@ -95,6 +95,31 @@ export interface PerformanceEntry {
   upt: number;
 }
 
+export interface Employee {
+  id: string;
+  name: string;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface DailyKPI {
+  id: string;
+  employeeId: string;
+  date: string; // YYYY-MM-DD
+  sale: number;   // ₹
+  bill: number;   // count
+  qty: number;    // units
+}
+
+export interface LFLBaseline {
+  label: string;       // e.g. "1st Apr – 23rd Apr 2025"
+  startDate: string;
+  endDate: string;
+  sale: number;
+  bill: number;
+  qty: number;
+}
+
 export interface Customer {
   id: string;
   createdAt: string;
