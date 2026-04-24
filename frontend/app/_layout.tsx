@@ -56,6 +56,7 @@ export default function RootLayout() {
           <Stack.Screen name="pipeline" options={{ title: 'B2B Pipeline' }} />
           <Stack.Screen name="timeline" options={{ title: 'Project Timeline' }} />
           <Stack.Screen name="export" options={{ title: 'Export & Reports' }} />
+          <Stack.Screen name="calculator" options={{ title: 'KPI Calculator' }} />
           <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         </Stack>
       </SafeAreaProvider>

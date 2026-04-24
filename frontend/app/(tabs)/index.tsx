@@ -116,6 +116,7 @@ export default function Home() {
 
 const QUICK_LINKS = [
   { label: 'Insights Feed', path: '/insights', icon: 'sparkles', color: colors.red },
+  { label: 'Calculator', path: '/calculator', icon: 'calculator', color: colors.navy },
   { label: 'Brand Health', path: '/brand-health', icon: 'pulse', color: colors.navy },
   { label: 'Performance', path: '/performance', icon: 'trending-up', color: colors.gold },
   { label: 'Dead Hours', path: '/dead-hours', icon: 'time', color: '#4F46E5' },

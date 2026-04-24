@@ -7,7 +7,8 @@ import { ScreenWrap, SectionTitle } from '../../lib/ui';
 
 const LINKS: { label: string; path: string; icon: string; color: string; desc: string }[] = [
   { label: 'All Responses', path: '/responses', icon: 'list', color: colors.navy, desc: 'Scrollable list + filters' },
-  { label: 'Performance', path: '/performance', icon: 'trending-up', color: colors.gold, desc: 'Bills · Units · ATV · UPT' },
+  { label: 'KPI Calculator', path: '/calculator', icon: 'calculator', color: colors.red, desc: 'ASP · ATV · UPT · LFL · Target back-solve' },
+  { label: 'Performance', path: '/performance', icon: 'trending-up', color: colors.gold, desc: 'Staff KPIs · leaderboard · LFL' },
   { label: 'Dead Hour Tracker', path: '/dead-hours', icon: 'time', color: '#4F46E5', desc: 'Hourly conversion heatmap' },
   { label: 'Competitive Tracker', path: '/competitive', icon: 'git-compare', color: colors.navy, desc: 'Benchmark vs rivals' },
   { label: 'AI Insights Feed', path: '/insights', icon: 'sparkles', color: colors.red, desc: 'Auto-generated cards' },
