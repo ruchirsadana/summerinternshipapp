@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, font, radius, shadow } from '../lib/theme';
 import { Card, ScreenWrap, Input, SectionTitle, PrimaryButton } from '../lib/ui';
+import { store } from '../lib/storage';
 
-type Mode = 'daily' | 'lfl' | 'target';
+type Mode = 'daily' | 'lfl' | 'target' | 'customer';
 
 const fmtINR = (n: number) => Number.isFinite(n) && n !== 0 ? `₹${Math.round(n).toLocaleString('en-IN')}` : '—';
 const fmtNum = (n: number, d = 2) => Number.isFinite(n) && n !== 0 ? n.toFixed(d) : '—';
@@ -19,7 +20,7 @@ export default function Calculator() {
         <Card>
           <SectionTitle title="KPI Calculator" subtitle="Instant — nothing is saved" />
           <View style={styles.segmentRow}>
-            {(['daily', 'lfl', 'target'] as Mode[]).map(m => (
+            {(['daily', 'lfl', 'target', 'customer'] as Mode[]).map(m => (
               <TouchableOpacity
                 key={m}
                 testID={`calc-tab-${m}`}
@@ -27,7 +28,7 @@ export default function Calculator() {
                 style={[styles.segmentBtn, mode === m && styles.segmentBtnActive]}
               >
                 <Text style={[styles.segmentText, mode === m && { color: colors.white }]}>
-                  {m === 'daily' ? 'Daily KPIs' : m === 'lfl' ? 'YoY / LFL' : 'Target Back-solve'}
+                  {m === 'daily' ? 'Daily' : m === 'lfl' ? 'YoY / LFL' : m === 'target' ? 'Target' : 'Customer'}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -37,6 +38,7 @@ export default function Calculator() {
         {mode === 'daily' && <DailyCalculator />}
         {mode === 'lfl' && <LFLCalculator />}
         {mode === 'target' && <TargetCalculator />}
+        {mode === 'customer' && <CustomerCalculator />}
 
         <Card>
           <SectionTitle title="Formulas used" />
@@ -46,6 +48,9 @@ export default function Calculator() {
           <Formula label="Conversion %" body="Bills ÷ Footfall × 100" />
           <Formula label="LFL %" body="(Current − Prior) ÷ Prior × 100" />
           <Formula label="Target / Day" body="(Target − Achieved) ÷ Days Remaining" />
+          <Formula label="CLV" body="Avg Order Value × Purchase Freq/yr × Lifespan (yrs)" />
+          <Formula label="Repeat Rate" body="Customers with ≥2 purchases ÷ Total customers × 100" />
+          <Formula label="Churn Rate" body="Customers lost ÷ Customers at period start × 100" />
         </Card>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -142,6 +147,126 @@ function LFLCalculator() {
   );
 }
 
+// ------ Customer Analytics (CLV · RPR · Churn) ------
+function CustomerCalculator() {
+  // Inputs (autofilled from stored customer data when user taps the chip)
+  const [aov, setAov] = useState('');        // Avg Order Value (₹)
+  const [freq, setFreq] = useState('');      // Purchase freq / year
+  const [lifespan, setLifespan] = useState('3');  // Years
+  const [totalCust, setTotalCust] = useState('');
+  const [repeatCust, setRepeatCust] = useState('');
+  const [startCust, setStartCust] = useState('');
+  const [lostCust, setLostCust] = useState('');
+  const [loadedFromDb, setLoadedFromDb] = useState(false);
+
+  // Auto-suggest from stored customer data on first mount
+  const autofill = async () => {
+    const list = await store.getCustomers();
+    if (!list.length) { setLoadedFromDb(true); return; }
+    const total = list.length;
+    const repeat = list.filter(c => (c.purchaseCount || 0) >= 2).length;
+    const totalVisits = list.reduce((s, c) => s + (c.purchaseCount || 0), 0);
+    const totalSpend = list.reduce((s, c) => s + (c.totalSpend || 0), 0);
+    const avgOrder = totalVisits ? totalSpend / totalVisits : 0;
+    const avgFreqPerYear = total ? totalVisits / total : 0;
+    setAov(avgOrder ? Math.round(avgOrder).toString() : '');
+    setFreq(avgFreqPerYear ? avgFreqPerYear.toFixed(1) : '');
+    setTotalCust(String(total));
+    setRepeatCust(String(repeat));
+    setLoadedFromDb(true);
+  };
+
+  useEffect(() => { autofill(); /* eslint-disable-line */ }, []);
+
+  const n = (v: string) => parseFloat(v) || 0;
+  const a = n(aov), f = n(freq), l = n(lifespan);
+  const tc = n(totalCust), rc = n(repeatCust);
+  const sc = n(startCust), lc = n(lostCust);
+
+  const clv = a * f * l;
+  const rpr = tc ? (rc / tc) * 100 : 0;
+  const churn = sc ? (lc / sc) * 100 : 0;
+  const retention = sc ? 100 - churn : 0;
+
+  const verdict = (v: number, good: number, bad: number, higherIsBetter = true) => {
+    if (!v) return { text: '—', color: colors.textMuted };
+    const isGood = higherIsBetter ? v >= good : v <= good;
+    const isBad = higherIsBetter ? v <= bad : v >= bad;
+    if (isGood) return { text: 'HEALTHY', color: colors.npsGreen };
+    if (isBad) return { text: 'AT RISK', color: colors.red };
+    return { text: 'FAIR', color: colors.npsYellow };
+  };
+
+  const rprVerdict = verdict(rpr, 30, 10, true);
+  const churnVerdict = verdict(churn, 5, 20, false);
+
+  const clear = () => {
+    setAov(''); setFreq(''); setLifespan('3'); setTotalCust('');
+    setRepeatCust(''); setStartCust(''); setLostCust('');
+  };
+
+  return (
+    <>
+      <Card>
+        <SectionTitle title="Customer Lifetime Value" subtitle="How much each customer is worth over their lifespan" />
+        <TouchableOpacity onPress={autofill} style={styles.autofillChip} testID="calc-autofill">
+          <Ionicons name="sparkles" size={14} color={colors.navy} />
+          <Text style={styles.autofillText}>
+            {loadedFromDb ? 'Refresh from Leads database' : 'Auto-fill from Leads'}
+          </Text>
+        </TouchableOpacity>
+        <Input label="Avg Order Value (₹)" value={aov} onChangeText={setAov} keyboardType="numeric" testID="clv-aov" />
+        <Input label="Purchase Frequency / year" value={freq} onChangeText={setFreq} keyboardType="numeric" testID="clv-freq" />
+        <Input label="Customer Lifespan (years)" value={lifespan} onChangeText={setLifespan} keyboardType="numeric" testID="clv-lifespan" />
+      </Card>
+
+      <Card>
+        <SectionTitle title="CLV Result" />
+        <ResultRow label="CLV" help="AOV × Freq × Lifespan" value={fmtINR(clv)} />
+        <ResultRow label="Per-year value" help="AOV × Frequency" value={fmtINR(a * f)} />
+      </Card>
+
+      <Card>
+        <SectionTitle title="Repeat Purchase Rate" subtitle="Share of customers with ≥ 2 purchases" />
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <View style={{ flex: 1 }}><Input label="Total customers" value={totalCust} onChangeText={setTotalCust} keyboardType="numeric" testID="rpr-total" /></View>
+          <View style={{ flex: 1 }}><Input label="Repeat (≥2 visits)" value={repeatCust} onChangeText={setRepeatCust} keyboardType="numeric" testID="rpr-repeat" /></View>
+        </View>
+        <View style={[styles.verdictRow, { backgroundColor: rprVerdict.color + '22' }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: colors.navy, fontWeight: '800', fontSize: 15 }}>Repeat Rate</Text>
+            <Text style={{ color: colors.textMuted, fontSize: 11 }}>Benchmark: 30%+ healthy · &lt;10% at risk</Text>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={{ color: rprVerdict.color, fontSize: 24, fontWeight: '800' }}>{rpr.toFixed(1)}%</Text>
+            <Text style={{ color: rprVerdict.color, fontSize: 10, fontWeight: '800', letterSpacing: 0.5 }}>{rprVerdict.text}</Text>
+          </View>
+        </View>
+      </Card>
+
+      <Card>
+        <SectionTitle title="Churn Rate" subtitle="Customers lost during the period" />
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <View style={{ flex: 1 }}><Input label="Customers at start" value={startCust} onChangeText={setStartCust} keyboardType="numeric" testID="churn-start" /></View>
+          <View style={{ flex: 1 }}><Input label="Customers lost" value={lostCust} onChangeText={setLostCust} keyboardType="numeric" testID="churn-lost" /></View>
+        </View>
+        <View style={[styles.verdictRow, { backgroundColor: churnVerdict.color + '22' }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: colors.navy, fontWeight: '800', fontSize: 15 }}>Churn</Text>
+            <Text style={{ color: colors.textMuted, fontSize: 11 }}>Retention {sc ? retention.toFixed(1) : '—'}% · Benchmark: ≤5% healthy</Text>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={{ color: churnVerdict.color, fontSize: 24, fontWeight: '800' }}>{churn.toFixed(1)}%</Text>
+            <Text style={{ color: churnVerdict.color, fontSize: 10, fontWeight: '800', letterSpacing: 0.5 }}>{churnVerdict.text}</Text>
+          </View>
+        </View>
+      </Card>
+
+      <PrimaryButton label="Clear" variant="outline" icon="refresh" onPress={clear} testID="customer-clear" />
+    </>
+  );
+}
+
 // ------ Target Back-solver ------
 function TargetCalculator() {
   const [target, setTarget] = useState('');
@@ -215,9 +340,9 @@ const Formula = ({ label, body }: { label: string; body: string }) => (
 );
 
 const styles = StyleSheet.create({
-  segmentRow: { flexDirection: 'row', gap: 6, marginTop: 10 },
+  segmentRow: { flexDirection: 'row', gap: 6, marginTop: 10, flexWrap: 'wrap' },
   segmentBtn: {
-    flex: 1, paddingVertical: 10, paddingHorizontal: 8,
+    flex: 1, minWidth: 68, paddingVertical: 10, paddingHorizontal: 8,
     borderRadius: radius.md, borderWidth: 1.2, borderColor: colors.navy,
     backgroundColor: colors.white, alignItems: 'center',
   },
@@ -226,5 +351,15 @@ const styles = StyleSheet.create({
   resultRow: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: 12,
     borderBottomWidth: 1, borderBottomColor: colors.borderLight,
+  },
+  autofillChip: {
+    flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start',
+    backgroundColor: '#F1F3F6', borderRadius: radius.pill,
+    paddingHorizontal: 10, paddingVertical: 6, marginVertical: 6,
+  },
+  autofillText: { color: colors.navy, fontWeight: '700', fontSize: 12 },
+  verdictRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    padding: 12, borderRadius: radius.md, marginTop: 8,
   },
 });

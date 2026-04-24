@@ -145,7 +145,7 @@ export default function Performance() {
 
         {/* Staff Leaderboard */}
         <Card>
-          <SectionTitle title="Staff Leaderboard" subtitle="Ranked by Sale · auto-calc ASP/ATV/UPT" />
+          <SectionTitle title="Staff Leaderboard" subtitle="Ranked by Sale · green = top, red = bottom" />
           {empAgg.length === 0 ? (
             <EmptyState icon="people-outline" title="No staff entries in range" body="Tap Log Daily KPIs to start." />
           ) : (
@@ -155,14 +155,23 @@ export default function Performance() {
                 {empAgg.map((r, i) => (
                   <Row
                     key={r.emp.id}
-                    label={r.emp.name}
+                    label={`${i + 1}. ${r.emp.name}`}
                     cells={[fmt(r.sale), fmt(r.bill), fmt(r.qty), fmt(r.asp), fmt(r.atv), fmtDec(r.upt, 2)]}
-                    tone={i < 4 ? 'top' : undefined}
+                    rankBg={rankColor(i, empAgg.length)}
                     wide
                   />
                 ))}
               </View>
             </ScrollView>
+          )}
+          {empAgg.length > 0 && (
+            <View style={styles.legend}>
+              <LegendChip color="#15803D" label="Top" />
+              <LegendChip color="#84CC16" label="Strong" />
+              <LegendChip color="#F59E0B" label="Mid" />
+              <LegendChip color="#EF4444" label="Low" />
+              <LegendChip color="#991B1B" label="Bottom" />
+            </View>
           )}
         </Card>
       </ScreenWrap>
@@ -190,15 +199,22 @@ export default function Performance() {
   );
 }
 
-const Row = ({ label, cells, header, tone, wide, deltas }: {
-  label: string; cells: string[]; header?: boolean; tone?: 'current' | 'lfl' | 'top'; wide?: boolean; deltas?: number[];
+const Row = ({ label, cells, header, tone, wide, deltas, rankBg }: {
+  label: string; cells: string[]; header?: boolean; tone?: 'current' | 'lfl' | 'top'; wide?: boolean; deltas?: number[]; rankBg?: string;
 }) => {
-  const bg = header ? '#E8EEF8' : tone === 'current' ? '#FFF9E6' : tone === 'lfl' ? '#F5F5F5' : tone === 'top' ? '#E8F5E9' : '#FFFFFF';
-  const labelW = wide ? 110 : 90;
+  const bg = header ? '#E8EEF8'
+    : rankBg ? rankBg
+    : tone === 'current' ? '#FFF9E6'
+    : tone === 'lfl' ? '#F5F5F5'
+    : tone === 'top' ? '#E8F5E9'
+    : '#FFFFFF';
+  const isRank = !!rankBg;
+  const textColor = isRank ? '#FFFFFF' : header ? colors.navy : colors.textPrimary;
+  const labelW = wide ? 130 : 90;
   return (
     <View style={{ flexDirection: 'row', backgroundColor: bg, borderBottomWidth: 1, borderColor: colors.borderLight }}>
       <View style={{ width: labelW, padding: 10, justifyContent: 'center' }}>
-        <Text numberOfLines={1} style={{ fontWeight: header ? '800' : '700', color: header ? colors.navy : colors.textPrimary, fontSize: header ? 11 : 13, letterSpacing: header ? 0.6 : 0 }}>
+        <Text numberOfLines={1} style={{ fontWeight: header ? '800' : '700', color: textColor, fontSize: header ? 11 : 13, letterSpacing: header ? 0.6 : 0 }}>
           {header ? label.toUpperCase() : label}
         </Text>
       </View>
@@ -209,7 +225,7 @@ const Row = ({ label, cells, header, tone, wide, deltas }: {
           <View key={i} style={{ width: 76, padding: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
             <Text style={{
               fontWeight: header ? '800' : '700',
-              color: deltaColor || (header ? colors.navy : colors.textPrimary),
+              color: deltaColor || textColor,
               fontSize: header ? 11 : 13,
               letterSpacing: header ? 0.6 : 0,
             }}>
@@ -221,6 +237,36 @@ const Row = ({ label, cells, header, tone, wide, deltas }: {
     </View>
   );
 };
+
+/** Map a rank (0 = best) into dark-green → yellow → dark-red heatmap color. */
+function rankColor(rank: number, total: number): string {
+  if (total <= 1) return '#15803D'; // solo → top
+  const t = rank / (total - 1); // 0..1
+  // 5-stop gradient: dark green, green, yellow, red, dark red
+  const stops = [
+    { at: 0.00, c: [21, 128, 61] },   // #15803D dark green
+    { at: 0.25, c: [132, 204, 22] },  // #84CC16 lime
+    { at: 0.50, c: [245, 158, 11] },  // #F59E0B amber
+    { at: 0.75, c: [239, 68, 68] },   // #EF4444 red
+    { at: 1.00, c: [153, 27, 27] },   // #991B1B dark red
+  ];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (t >= stops[i].at && t <= stops[i + 1].at) {
+      const span = stops[i + 1].at - stops[i].at;
+      const k = span ? (t - stops[i].at) / span : 0;
+      const c = stops[i].c.map((v, idx) => Math.round(v + (stops[i + 1].c[idx] - v) * k));
+      return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
+    }
+  }
+  return '#15803D';
+}
+
+const LegendChip = ({ color, label }: { color: string; label: string }) => (
+  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+    <View style={{ width: 12, height: 12, borderRadius: 3, backgroundColor: color }} />
+    <Text style={{ fontSize: 11, color: colors.textSecondary, fontWeight: '700' }}>{label}</Text>
+  </View>
+);
 
 // ------------- Daily Entry Modal -------------
 function DailyEntryModal({ open, onClose, employees, onSaved }: {
@@ -403,4 +449,8 @@ const styles = StyleSheet.create({
   iconBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.bg, alignItems: 'center', justifyContent: 'center' },
   overlay: { flex: 1, backgroundColor: 'rgba(15,26,48,0.6)', justifyContent: 'center', padding: 20 },
   dialog: { backgroundColor: colors.white, borderRadius: radius.lg, padding: 20, gap: 12, ...shadow.elevated },
+  legend: {
+    flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 12,
+    paddingTop: 10, borderTopWidth: 1, borderTopColor: colors.borderLight,
+  },
 });

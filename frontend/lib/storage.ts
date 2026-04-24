@@ -69,6 +69,7 @@ export const store = {
   getCustomers: () => getList<Customer>(KEYS.customers),
   addCustomer: (c: Customer) => addItem(KEYS.customers, c),
   updateCustomer: (id: string, patch: Partial<Customer>) => updateItem<Customer>(KEYS.customers, id, patch),
+  deleteCustomer: (id: string) => deleteItem<Customer>(KEYS.customers, id),
 
   // Dead hours
   getDeadHours: () => getList<DeadHourEntry>(KEYS.deadHours),

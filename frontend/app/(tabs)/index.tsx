@@ -107,8 +107,8 @@ export default function Home() {
 
       {/* Primary CTA */}
       <PrimaryButton
-        label="Start New Survey"
-        icon="add-circle"
+        label="Voice of Customer"
+        icon="mic"
         variant="accent"
         onPress={() => router.push('/survey/new')}
         testID="start-new-survey-btn"

@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert } from 'react-native';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert, Animated, Platform } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Swipeable } from 'react-native-gesture-handler';
 import { colors, font, spacing, radius, shadow, tierColor } from '../../lib/theme';
 import { Card, ScreenWrap, PrimaryButton, Input, RadioGroup, CheckboxGroup, SectionTitle, Chip, EmptyState } from '../../lib/ui';
 import { store } from '../../lib/storage';
@@ -68,6 +69,43 @@ export default function Customers() {
     setVisitCust(null); setVisitAmt(''); load();
   };
 
+  const confirmDelete = (c: Customer, close?: () => void) => {
+    const doDelete = async () => { await store.deleteCustomer(c.id); load(); };
+    if (Platform.OS === 'web') {
+      if (typeof window !== 'undefined' && window.confirm(`Delete ${c.name}? This cannot be undone.`)) {
+        doDelete();
+      } else {
+        close?.();
+      }
+    } else {
+      Alert.alert('Delete lead', `Remove ${c.name} from your database?`, [
+        { text: 'Cancel', style: 'cancel', onPress: () => close?.() },
+        { text: 'Delete', style: 'destructive', onPress: doDelete },
+      ]);
+    }
+  };
+
+  const renderRightActions = (c: Customer, swipeRef: React.RefObject<Swipeable>) =>
+    (progress: Animated.AnimatedInterpolation<number>) => {
+      const translateX = progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [64, 0],
+      });
+      return (
+        <Animated.View style={[styles.deleteAction, { transform: [{ translateX }] }]}>
+          <TouchableOpacity
+            testID={`customer-delete-${c.id}`}
+            onPress={() => confirmDelete(c, () => swipeRef.current?.close())}
+            style={styles.deleteBtn}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="trash" size={22} color={colors.white} />
+            <Text style={styles.deleteBtnText}>Delete</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      );
+    };
+
   return (
     <>
       <ScreenWrap>
@@ -108,34 +146,15 @@ export default function Customers() {
           <View key={t} style={{ gap: 8 }}>
             <SectionTitle title={`${t} · ${grouped[t].length}`} subtitle={tierSubtitle[t]} />
             {grouped[t].map(c => (
-              <Card key={c.id} testID={`customer-${c.id}`}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <View style={[styles.tierDot, { backgroundColor: tierColor(t) }]}>
-                    <Text style={{ color: colors.white, fontWeight: '800', fontSize: 10 }}>{t[0]}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[font.h3, { color: colors.navy }]}>{c.name}</Text>
-                    <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
-                      **** {c.phone.slice(-4)} · {c.ageGroup || '—'} · {c.purchaseCount} visit{c.purchaseCount !== 1 ? 's' : ''}
-                    </Text>
-                    <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '800', marginTop: 2 }}>
-                      ₹{(c.totalSpend || 0).toLocaleString('en-IN')} lifetime
-                    </Text>
-                    <View style={{ flexDirection: 'row', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
-                      {c.categoryPrefs.slice(0, 3).map(cat => <Chip key={cat} label={cat} small />)}
-                      {c.birthdayMonth === thisMonth && <Chip label="🎂 THIS MONTH" tone="red" small />}
-                    </View>
-                  </View>
-                  <TouchableOpacity
-                    testID={`customer-visit-${c.id}`}
-                    onPress={() => { setVisitCust(c); setVisitAmt(''); }}
-                    style={{ padding: 8 }}
-                  >
-                    <Ionicons name="add-circle" size={30} color={colors.red} />
-                  </TouchableOpacity>
-                </View>
-                {!!c.notes && <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 6 }}>{c.notes}</Text>}
-              </Card>
+              <CustomerRow
+                key={c.id}
+                customer={c}
+                tier={t}
+                thisMonth={thisMonth}
+                onVisit={() => { setVisitCust(c); setVisitAmt(''); }}
+                onDelete={(close) => confirmDelete(c, close)}
+                renderRightActions={renderRightActions}
+              />
             ))}
           </View>
         ))}
@@ -163,6 +182,67 @@ export default function Customers() {
         </View>
       </Modal>
     </>
+  );
+}
+
+function CustomerRow({
+  customer: c, tier: t, thisMonth, onVisit, onDelete, renderRightActions,
+}: {
+  customer: Customer;
+  tier: Tier;
+  thisMonth: string;
+  onVisit: () => void;
+  onDelete: (close?: () => void) => void;
+  renderRightActions: (c: Customer, ref: React.RefObject<Swipeable>) => (p: Animated.AnimatedInterpolation<number>) => React.ReactElement;
+}) {
+  const swipeRef = useRef<Swipeable>(null);
+  return (
+    <Swipeable
+      ref={swipeRef}
+      renderRightActions={renderRightActions(c, swipeRef)}
+      overshootRight={false}
+      rightThreshold={40}
+      friction={2}
+    >
+      <Card testID={`customer-${c.id}`}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <View style={[styles.tierDot, { backgroundColor: tierColor(t) }]}>
+            <Text style={{ color: colors.white, fontWeight: '800', fontSize: 10 }}>{t[0]}</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[font.h3, { color: colors.navy }]}>{c.name}</Text>
+            <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
+              **** {c.phone.slice(-4)} · {c.ageGroup || '—'} · {c.purchaseCount} visit{c.purchaseCount !== 1 ? 's' : ''}
+            </Text>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '800', marginTop: 2 }}>
+              ₹{(c.totalSpend || 0).toLocaleString('en-IN')} lifetime
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
+              {c.categoryPrefs.slice(0, 3).map(cat => <Chip key={cat} label={cat} small />)}
+              {c.birthdayMonth === thisMonth && <Chip label="🎂 THIS MONTH" tone="red" small />}
+            </View>
+          </View>
+          <TouchableOpacity
+            testID={`customer-visit-${c.id}`}
+            onPress={onVisit}
+            style={{ padding: 8 }}
+          >
+            <Ionicons name="add-circle" size={28} color={colors.red} />
+          </TouchableOpacity>
+          {/* Trash icon for web / desktop fallback where swipe is awkward */}
+          <TouchableOpacity
+            testID={`customer-delete-btn-${c.id}`}
+            onPress={() => onDelete(() => swipeRef.current?.close())}
+            style={{ padding: 6 }}
+            accessibilityLabel="Delete lead"
+          >
+            <Ionicons name="trash-outline" size={20} color={colors.textMuted} />
+          </TouchableOpacity>
+        </View>
+        {!!c.notes && <Text style={{ fontSize: 13, color: colors.textSecondary, marginTop: 6 }}>{c.notes}</Text>}
+        <Text style={styles.swipeHint}>← Swipe left to delete</Text>
+      </Card>
+    </Swipeable>
   );
 }
 
@@ -245,4 +325,13 @@ const styles = StyleSheet.create({
   monthChip: { borderWidth: 1, borderColor: colors.navy, paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill, backgroundColor: colors.white },
   overlay: { flex: 1, backgroundColor: 'rgba(15,26,48,0.6)', justifyContent: 'center', padding: 24 },
   dialog: { backgroundColor: colors.white, borderRadius: radius.lg, padding: 20, gap: 12, ...shadow.elevated },
+  deleteAction: {
+    width: 90, marginLeft: 8, justifyContent: 'center', alignItems: 'stretch',
+  },
+  deleteBtn: {
+    flex: 1, backgroundColor: colors.red, borderRadius: radius.lg,
+    alignItems: 'center', justifyContent: 'center', gap: 4,
+  },
+  deleteBtnText: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 0.5 },
+  swipeHint: { fontSize: 10, color: colors.textMuted, fontWeight: '600', letterSpacing: 0.3, marginTop: 4, textAlign: 'right' },
 });
