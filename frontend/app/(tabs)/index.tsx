@@ -22,8 +22,12 @@ const greeting = () => {
 
 const weatherIcon = () => {
   const h = new Date().getHours();
-  if (h >= 6 && h < 18) return 'sunny';
-  return 'moon';
+  const m = new Date().getMonth(); // 0=Jan, 5=Jun, 8=Sep
+  const monsoon = m >= 5 && m <= 8; // Jun-Sep = Mumbai monsoon
+  if (monsoon) return 'rainy';
+  if (h >= 18 || h < 6) return 'moon';
+  if (h < 10 || h > 16) return 'partly-sunny';
+  return 'sunny';
 };
 
 export default function Home() {
@@ -66,8 +70,13 @@ export default function Home() {
       contentContainerStyle={[{ padding: spacing.md, gap: spacing.md, paddingBottom: 60 }, webConstraint]}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.navy} />}
     >
-      {/* Top strip: theme toggle + Mumbai chip */}
+      {/* Top strip: Mumbai on left, theme toggle on right */}
       <View style={styles.topStrip}>
+        <View style={styles.locationChip} testID="location-chip">
+          <Ionicons name={weatherIcon() as any} size={16} color={colors.gold} />
+          <Text style={styles.locationText}>Mumbai</Text>
+        </View>
+        <View style={{ flex: 1 }} />
         <TouchableOpacity
           onPress={toggle}
           style={styles.iconBtn}
@@ -75,11 +84,6 @@ export default function Home() {
         >
           <Ionicons name={mode === 'dark' ? 'sunny' : 'moon'} size={18} color={colors.navy} />
         </TouchableOpacity>
-        <View style={{ flex: 1 }} />
-        <View style={styles.locationChip} testID="location-chip">
-          <Ionicons name={weatherIcon() as any} size={16} color={colors.gold} />
-          <Text style={styles.locationText}>Mumbai</Text>
-        </View>
       </View>
 
       {/* Hero */}

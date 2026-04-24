@@ -1,0 +1,10 @@
+{
+  "name": "th-field-intelligence-deploy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vercel deploy wrapper — runs the Expo Web build inside /frontend",
+  "scripts": {
+    "build": "cd frontend && yarn install --frozen-lockfile && npx expo export --platform web",
+    "vercel-build": "yarn build"
+  }
+}

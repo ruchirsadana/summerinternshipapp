@@ -1,9 +1,9 @@
 {
-  "buildCommand": "cd frontend && yarn install --frozen-lockfile && npx expo export --platform web",
+  "version": 2,
+  "buildCommand": "yarn build",
   "outputDirectory": "frontend/dist",
-  "installCommand": "echo 'skip-root-install'",
-  "framework": null,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  "installCommand": "yarn install --ignore-scripts || true",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "framework": null
 }
