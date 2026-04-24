@@ -47,6 +47,11 @@ export default function More() {
           <Ionicons name="chevron-forward" size={20} color={t.textMuted} />
         </TouchableOpacity>
       ))}
+
+      <View style={styles.credit}>
+        <Text style={styles.creditText}>Created by Ruchir Sadana</Text>
+        <Text style={styles.creditSub}>April 2026</Text>
+      </View>
     </ScreenWrap>
   );
 }
@@ -57,4 +62,11 @@ const styles = StyleSheet.create({
     padding: 14, borderRadius: radius.lg, ...shadow.card,
   },
   icon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  credit: {
+    alignItems: 'center', marginTop: 24, paddingTop: 20,
+    borderTopWidth: 1, borderTopColor: colors.borderLight, gap: 4,
+  },
+  // explicit indigo not in dark-mode CSS map → readable in both modes
+  creditText: { color: '#0F2D78', fontSize: 13, fontWeight: '700', letterSpacing: 0.4 },
+  creditSub: { color: '#4F5B85', fontSize: 11, fontWeight: '600', letterSpacing: 0.3 },
 });

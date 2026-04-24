@@ -411,14 +411,18 @@ function BigBillModal({ open, employees, onClose, onSaved }: {
 const Row = ({ label, cells, header, tone, wide, deltas, rankBg }: {
   label: string; cells: string[]; header?: boolean; tone?: 'current' | 'lfl' | 'top'; wide?: boolean; deltas?: number[]; rankBg?: string;
 }) => {
-  const bg = header ? '#E8EEF8'
+  // Header uses an explicit blue/text color NOT in the dark-theme CSS remap so the
+  // header reads as dark blue on a light strip even when the rest of the app flips dark.
+  const HEADER_BG = '#DDE4F5';
+  const HEADER_TEXT = '#0F2D78';
+  const bg = header ? HEADER_BG
     : rankBg ? rankBg
     : tone === 'current' ? '#FFF9E6'
     : tone === 'lfl' ? '#F5F5F5'
     : tone === 'top' ? '#E8F5E9'
     : '#FFFFFF';
   const isRank = !!rankBg;
-  const textColor = isRank ? '#FFFFFF' : header ? colors.navy : colors.textPrimary;
+  const textColor = header ? HEADER_TEXT : isRank ? '#FFFFFF' : colors.textPrimary;
   const labelW = wide ? 130 : 90;
   return (
     <View style={{ flexDirection: 'row', backgroundColor: bg, borderBottomWidth: 1, borderColor: colors.borderLight }}>

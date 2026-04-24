@@ -191,17 +191,17 @@ export interface InsightCard {
 
 /* ---------- Visual Merchandising ---------- */
 export const VM_ZONES = [
-  'Window',
-  'Entrance',
-  'Denim',
-  'Apparel',
-  'Footwear',
-  'Fragrance',
-  'Accessories',
-  'Kids',
-  'Cash Wrap',
-  'Fitting Room',
-  'Back Wall',
+  'Polo Window Wall',
+  'Focal Wall & Table',
+  'Polo Table',
+  'Women RHS Wall',
+  'Women Focal Wall & Table',
+  'TJ Table & Glass Wall',
+  'Denim Wall',
+  'Shirt Shop',
+  'THT',
+  'Red Window Wall & White Table',
+  'Front Focal Wall & Bag Wall',
 ] as const;
 export type VMZone = typeof VM_ZONES[number];
 
