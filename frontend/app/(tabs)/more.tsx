@@ -17,9 +17,8 @@ const LINKS: { label: string; path: string; icon: string; color: string; desc: s
   { label: 'Field Notes', path: '/field-notes', icon: 'book', color: '#0F766E', desc: 'Captain\'s log' },
   { label: 'Presentation Mode', path: '/presentation', icon: 'easel', color: '#4F46E5', desc: 'Clean read-only snapshot' },
   { label: 'B2B Pipeline', path: '/pipeline', icon: 'briefcase', color: colors.gold, desc: 'Corporate gifting leads' },
-  { label: 'Project Timeline', path: '/timeline', icon: 'calendar', color: colors.red, desc: 'Week-by-week milestones' },
   { label: 'Export & Reports', path: '/export', icon: 'share-social', color: '#059669', desc: 'CSV · WhatsApp · Email' },
-  { label: 'Settings', path: '/settings', icon: 'settings', color: colors.textSecondary, desc: 'Name · store · target' },
+  { label: 'Settings', path: '/settings', icon: 'settings', color: colors.textSecondary, desc: 'Name · store · target · dark mode' },
 ];
 
 export default function More() {

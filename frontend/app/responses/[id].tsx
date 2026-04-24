@@ -18,11 +18,13 @@ export default function ResponseDetail() {
       <Card>
         <Text style={{ fontSize: 11, letterSpacing: 0.8, color: colors.textSecondary, fontWeight: '700' }}>SURVEY ID</Text>
         <Text style={[font.h2, { color: colors.navy }]}>{survey.id}</Text>
+        {!!survey.respondentName && <Text style={{ color: colors.red, fontWeight: '700', marginTop: 2 }}>{survey.respondentName}</Text>}
         <Text style={{ color: colors.textSecondary, fontSize: 13 }}>{new Date(survey.createdAt).toLocaleString()}</Text>
       </Card>
 
       <Card>
         <SectionTitle title="A · Profile" />
+        <Row label="Name" value={survey.respondentName} />
         <Row label="Age" value={survey.ageGroup} />
         <Row label="Gender" value={survey.gender} />
         <Row label="Occupation" value={survey.occupation} />

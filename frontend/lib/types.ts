@@ -49,6 +49,7 @@ export interface Comparisons {
 export interface Survey {
   id: string;
   createdAt: string;
+  respondentName: string;
   ageGroup: AgeGroup | '';
   gender: Gender | '';
   occupation: Occupation | '';

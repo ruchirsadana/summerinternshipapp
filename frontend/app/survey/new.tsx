@@ -1,11 +1,12 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { useRouter, useNavigation } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Slider from '@react-native-community/slider';
 import { colors, font, spacing, radius } from '../../lib/theme';
 import { Card, PrimaryButton, Input, RadioGroup, CheckboxGroup, SectionTitle, StarRating, ProgressBar } from '../../lib/ui';
 import { store } from '../../lib/storage';
+import { showAlert } from '../../lib/alert';
 import { npsColor } from '../../lib/theme';
 import type { Survey, Ratings, Comparisons, Comparison } from '../../lib/types';
 
@@ -29,6 +30,7 @@ export default function NewSurvey() {
   const navigation = useNavigation();
   const [step, setStep] = useState(0);
   const [s, setS] = useState<Omit<Survey, 'id' | 'createdAt'>>({
+    respondentName: '',
     ageGroup: '', gender: '', occupation: '', shoppingFrequency: '',
     unaidedRecall: '', brandAwareness: [], discoveryChannel: '', discoveryOther: '',
     word1: '', word2: '', word3: '',
@@ -38,7 +40,7 @@ export default function NewSurvey() {
   });
 
   const isDirty = (): boolean => {
-    return !!(s.ageGroup || s.gender || s.occupation || s.unaidedRecall ||
+    return !!(s.respondentName || s.ageGroup || s.gender || s.occupation || s.unaidedRecall ||
       s.brandAwareness.length || s.word1 || s.word2 || s.word3 ||
       Object.values(s.ratings).some(v => v > 0) || s.visitReason ||
       s.categories.length || s.spendBracket || s.feedback || s.nps !== 7);
@@ -46,7 +48,7 @@ export default function NewSurvey() {
 
   const exitToHome = () => {
     if (isDirty()) {
-      Alert.alert('Exit survey?', 'Your progress will be lost.', [
+      showAlert('Exit survey?', 'Your progress will be lost.', [
         { text: 'Stay', style: 'cancel' },
         { text: 'Exit', style: 'destructive', onPress: () => router.replace('/') },
       ]);
@@ -72,9 +74,7 @@ export default function NewSurvey() {
   const submit = async () => {
     const survey: Survey = { id: `S-${Date.now()}`, createdAt: new Date().toISOString(), ...s };
     await store.addSurvey(survey);
-    Alert.alert('Survey submitted', `Saved as ${survey.id}`, [
-      { text: 'Done', onPress: () => router.replace('/(tabs)') },
-    ]);
+    router.replace({ pathname: '/survey/success', params: { id: survey.id } } as any);
   };
 
   return (
@@ -92,13 +92,15 @@ export default function NewSurvey() {
 
         {step === 0 && (
           <Card>
-            <Label text="Q1. Age Group" />
+            <Label text="Q1. Customer / Respondent Name" />
+            <Input value={s.respondentName} onChangeText={t => setS({ ...s, respondentName: t })} placeholder="Full name" testID="respondent-name" autoCapitalize="words" />
+            <Label text="Q2. Age Group" />
             <RadioGroup options={AGE} value={s.ageGroup} onChange={v => setS({ ...s, ageGroup: v })} testIDPrefix="age" columns={2} />
-            <Label text="Q2. Gender" />
+            <Label text="Q3. Gender" />
             <RadioGroup options={GENDER} value={s.gender} onChange={v => setS({ ...s, gender: v })} testIDPrefix="gender" />
-            <Label text="Q3. Occupation" />
+            <Label text="Q4. Occupation" />
             <RadioGroup options={OCCUPATION} value={s.occupation} onChange={v => setS({ ...s, occupation: v })} testIDPrefix="occupation" />
-            <Label text="Q4. Shopping Frequency at premium stores" />
+            <Label text="Q5. Shopping Frequency at premium stores" />
             <RadioGroup options={FREQ} value={s.shoppingFrequency} onChange={v => setS({ ...s, shoppingFrequency: v })} testIDPrefix="freq" />
           </Card>
         )}

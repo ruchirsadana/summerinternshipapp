@@ -26,7 +26,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
-          headerTitle: 'TH Field Intelligence',
+          headerShown: false,
         }}
       />
       <Tabs.Screen

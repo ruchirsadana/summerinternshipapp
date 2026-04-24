@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { ThemeProvider } from '../lib/themeContext';
 
 const goBack = () => {
   if (router.canGoBack()) router.back();
@@ -27,6 +28,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
+        <ThemeProvider>
         <StatusBar style="light" />
         <Stack
           screenOptions={{
@@ -43,6 +45,7 @@ export default function RootLayout() {
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false, headerLeft: undefined, headerRight: undefined }} />
           <Stack.Screen name="survey/new" options={{ title: 'New Survey' }} />
+          <Stack.Screen name="survey/success" options={{ title: 'Survey Submitted', headerLeft: () => null }} />
           <Stack.Screen name="responses/index" options={{ title: 'All Responses' }} />
           <Stack.Screen name="responses/[id]" options={{ title: 'Response Detail' }} />
           <Stack.Screen name="competitive" options={{ title: 'Competitive Tracker' }} />
@@ -54,11 +57,11 @@ export default function RootLayout() {
           <Stack.Screen name="field-notes" options={{ title: 'Field Notes' }} />
           <Stack.Screen name="presentation" options={{ title: 'Presentation Mode' }} />
           <Stack.Screen name="pipeline" options={{ title: 'B2B Pipeline' }} />
-          <Stack.Screen name="timeline" options={{ title: 'Project Timeline' }} />
           <Stack.Screen name="export" options={{ title: 'Export & Reports' }} />
           <Stack.Screen name="calculator" options={{ title: 'KPI Calculator' }} />
           <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         </Stack>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
