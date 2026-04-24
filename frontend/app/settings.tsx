@@ -29,7 +29,7 @@ export default function SettingsScreen() {
       </Card>
       <Card>
         <SectionTitle title="About" />
-        <Text style={{ color: colors.textSecondary }}>TH Field Intelligence · Offline-first · All data stored locally on device. Tap Export to back up anytime.</Text>
+        <Text style={{ color: colors.textSecondary }}>TH Growth Intelligence · Offline-first · All data stored locally on device. Tap Export to back up anytime.</Text>
       </Card>
     </ScreenWrap>
   );

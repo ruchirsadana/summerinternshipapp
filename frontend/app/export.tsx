@@ -137,7 +137,7 @@ export default function Export() {
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
             const file = new File([blob], filename, { type: 'text/csv' });
             if (nav.canShare({ files: [file] })) {
-              await nav.share({ files: [file], title: filename, text: 'TH Field Intelligence export' });
+              await nav.share({ files: [file], title: filename, text: 'TH Growth Intelligence export' });
               return;
             }
           } catch { /* user cancelled or unsupported — fall through to download */ }

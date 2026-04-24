@@ -101,7 +101,7 @@ export default function Home() {
         <View style={{ flex: 1 }}>
           <Text style={styles.heroSub}>{greeting()}{settings?.internName ? `, ${settings.internName.split(' ')[0]}` : ''} 👋</Text>
           <Text style={styles.heroTitle}>{settings?.storeName || 'Tommy Hilfiger BKC'}</Text>
-          <Text style={styles.heroStore}>Field Intelligence</Text>
+          <Text style={styles.heroStore}>Growth Intelligence</Text>
         </View>
       </View>
 
