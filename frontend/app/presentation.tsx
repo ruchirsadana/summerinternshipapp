@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { colors, font, radius, shadow } from '../lib/theme';
 import { ScreenWrap, SectionTitle, EmptyState, Card } from '../lib/ui';
@@ -7,6 +7,8 @@ import { Gauge } from '../lib/charts';
 import { store } from '../lib/storage';
 import { computeNPS, avgRatings, topWord } from '../lib/analytics';
 import type { Survey, Settings, InsightCard, PerformanceEntry } from '../lib/types';
+
+const TH_LOGO_URL = 'https://customer-assets.emergentagent.com/job_consumer-pulse-app/artifacts/3l6pshs6_giftcard-th-new.webp';
 
 export default function Presentation() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
@@ -32,16 +34,9 @@ export default function Presentation() {
   return (
     <ScreenWrap>
       <View style={styles.hero}>
-        <View style={styles.flag}>
-          <View style={[styles.flagBar, { backgroundColor: colors.navy }]} />
-          <View style={{ flexDirection: 'row' }}>
-            <View style={[styles.flagSquare, { backgroundColor: colors.white }]} />
-            <View style={[styles.flagSquare, { backgroundColor: colors.red }]} />
-          </View>
-          <View style={[styles.flagBar, { backgroundColor: colors.navy }]} />
-        </View>
-        <Text style={{ color: colors.white, fontSize: 24, fontWeight: '800', marginTop: 12 }}>{settings?.storeName || 'Tommy Hilfiger'}</Text>
-        <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700', marginTop: 2 }}>Internship Snapshot · {settings?.internName || 'Field Intern'}</Text>
+        <Image source={{ uri: TH_LOGO_URL }} style={styles.logo} resizeMode="contain" />
+        <Text style={{ color: colors.white, fontSize: 24, fontWeight: '800', marginTop: 16 }}>{settings?.storeName || 'Tommy Hilfiger BKC'}</Text>
+        <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700', marginTop: 4 }}>Internship Snapshot · {settings?.internName || 'Field Intern'}</Text>
       </View>
 
       <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -83,8 +78,6 @@ export default function Presentation() {
 
 const styles = StyleSheet.create({
   hero: { backgroundColor: colors.navy, borderRadius: radius.xl, padding: 24, alignItems: 'center', ...shadow.elevated },
-  flag: { width: 80, height: 80, overflow: 'hidden', borderRadius: 8 },
-  flagBar: { height: 14 },
-  flagSquare: { width: 40, height: 52 },
+  logo: { width: 96, height: 96, borderRadius: 12, backgroundColor: colors.white },
   caption: { fontSize: 11, fontWeight: '800', color: colors.textSecondary, letterSpacing: 0.8 },
 });

@@ -102,10 +102,18 @@ export const store = {
   // Settings
   getSettings: async (): Promise<Settings> => {
     const raw = await AsyncStorage.getItem(KEYS.settings);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Settings;
+      // Migrate old default store name
+      if (parsed.storeName === 'Tommy Hilfiger') {
+        parsed.storeName = 'Tommy Hilfiger BKC';
+        await AsyncStorage.setItem(KEYS.settings, JSON.stringify(parsed));
+      }
+      return parsed;
+    }
     const def: Settings = {
       internName: '',
-      storeName: 'Tommy Hilfiger',
+      storeName: 'Tommy Hilfiger BKC',
       target: 150,
       startDate: new Date().toISOString().slice(0, 10),
     };

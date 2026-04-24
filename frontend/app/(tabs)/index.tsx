@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, RefreshControl, Image } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { store } from '../../lib/storage';
@@ -7,6 +7,8 @@ import { colors, font, spacing, radius, shadow } from '../../lib/theme';
 import { Card, PrimaryButton, ProgressBar, Stat } from '../../lib/ui';
 import { computeNPS, avgRatings, isToday } from '../../lib/analytics';
 import type { Survey, Settings } from '../../lib/types';
+
+const TH_LOGO_URL = 'https://customer-assets.emergentagent.com/job_consumer-pulse-app/artifacts/3l6pshs6_giftcard-th-new.webp';
 
 export default function Home() {
   const router = useRouter();
@@ -49,18 +51,11 @@ export default function Home() {
     >
       {/* Hero */}
       <View style={styles.hero} testID="home-hero">
-        <View style={styles.flag}>
-          <View style={[styles.flagBar, { backgroundColor: colors.navy }]} />
-          <View style={{ flexDirection: 'row' }}>
-            <View style={[styles.flagSquare, { backgroundColor: colors.white }]} />
-            <View style={[styles.flagSquare, { backgroundColor: colors.red }]} />
-          </View>
-          <View style={[styles.flagBar, { backgroundColor: colors.navy }]} />
-        </View>
+        <Image source={{ uri: TH_LOGO_URL }} style={styles.logo} resizeMode="contain" />
         <View style={{ flex: 1 }}>
           <Text style={styles.heroSub}>Welcome{settings?.internName ? `, ${settings.internName}` : ''}</Text>
           <Text style={styles.heroTitle}>TH Field Intelligence</Text>
-          <Text style={styles.heroStore}>{settings?.storeName || 'Tommy Hilfiger'}</Text>
+          <Text style={styles.heroStore}>{settings?.storeName || 'Tommy Hilfiger BKC'}</Text>
         </View>
       </View>
 
@@ -134,15 +129,13 @@ const QUICK_LINKS = [
 
 const styles = StyleSheet.create({
   hero: {
-    backgroundColor: colors.navy, borderRadius: radius.xl, padding: spacing.lg, gap: 12,
+    backgroundColor: colors.navy, borderRadius: radius.xl, padding: spacing.lg, gap: 14,
     flexDirection: 'row', alignItems: 'center', ...shadow.elevated,
   },
-  flag: { width: 64, height: 64, overflow: 'hidden', borderRadius: 8 },
-  flagBar: { height: 10 },
-  flagSquare: { width: 32, height: 44 },
+  logo: { width: 68, height: 68, borderRadius: 10, backgroundColor: colors.white },
   heroSub: { color: '#AAB5CE', fontSize: 12, fontWeight: '600', letterSpacing: 1 },
   heroTitle: { color: colors.white, fontSize: 22, fontWeight: '800', marginTop: 2, letterSpacing: -0.3 },
-  heroStore: { color: colors.gold, fontSize: 13, fontWeight: '700', marginTop: 2 },
+  heroStore: { color: colors.gold, fontSize: 14, fontWeight: '800', marginTop: 4, letterSpacing: 0.3 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   quickCard: {
     flexBasis: '30%' as any, flexGrow: 1, backgroundColor: colors.white, borderRadius: radius.lg,
