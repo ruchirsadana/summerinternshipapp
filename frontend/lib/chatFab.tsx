@@ -164,7 +164,7 @@ export default function ChatFab() {
         >
           <Ionicons name="chatbubble-ellipses" size={26} color={colors.white} />
           <View style={styles.fabBadge}>
-            <Text style={styles.fabBadgeText}>AI</Text>
+            <Text style={styles.fabBadgeText}>GenAI</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -315,9 +315,9 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   fabBadge: {
-    position: 'absolute', top: -4, right: -4,
-    backgroundColor: colors.gold, paddingHorizontal: 5, paddingVertical: 2,
-    borderRadius: 8, borderWidth: 1.5, borderColor: colors.white,
+    position: 'absolute', top: -6, right: -8,
+    backgroundColor: colors.gold, paddingHorizontal: 6, paddingVertical: 2,
+    borderRadius: 9, borderWidth: 1.5, borderColor: colors.white,
   },
   fabBadgeText: { color: colors.navy, fontSize: 9, fontWeight: '900', letterSpacing: 0.4 },
   backdrop: { flex: 1, backgroundColor: 'rgba(15,26,48,0.55)', justifyContent: 'flex-end' },
