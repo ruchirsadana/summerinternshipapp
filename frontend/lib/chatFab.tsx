@@ -21,12 +21,23 @@ const INITIAL_GREETING: Turn = {
 /** Simulated "typing" delay so the bot feels less robotic. */
 const TYPE_DELAY = 550;
 
+/** Returns browser SpeechRecognition class (web only). */
+function getSpeechRecognition(): any | null {
+  if (Platform.OS !== 'web' || typeof window === 'undefined') return null;
+  const w = window as any;
+  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
+}
+
 export default function ChatFab() {
   const [open, setOpen] = useState(false);
   const [history, setHistory] = useState<Turn[]>([INITIAL_GREETING]);
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [listening, setListening] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
+  const recogRef = useRef<any>(null);
+
+  const voiceAvailable = !!getSpeechRecognition();
 
   // Hydrate persisted chat on first mount
   useEffect(() => {
@@ -68,6 +79,68 @@ export default function ChatFab() {
     setHistory([INITIAL_GREETING]);
     AsyncStorage.removeItem(STORAGE_KEY).catch(() => {});
   };
+
+  /** Toggle voice dictation via the browser SpeechRecognition API (free, no credits). */
+  const toggleVoice = () => {
+    const SR = getSpeechRecognition();
+    if (!SR) return;
+    // Stop if already running
+    if (listening) {
+      try { recogRef.current?.stop(); } catch {}
+      setListening(false);
+      return;
+    }
+    try {
+      const recog = new SR();
+      recog.lang = 'en-IN';
+      recog.continuous = false;
+      recog.interimResults = true;
+      recog.maxAlternatives = 1;
+
+      let finalText = '';
+      recog.onresult = (evt: any) => {
+        let interim = '';
+        for (let i = evt.resultIndex; i < evt.results.length; i++) {
+          const r = evt.results[i];
+          if (r.isFinal) finalText += r[0].transcript;
+          else interim += r[0].transcript;
+        }
+        setInput((finalText + interim).trim());
+      };
+      recog.onerror = (e: any) => {
+        setListening(false);
+        if (e?.error && e.error !== 'aborted' && e.error !== 'no-speech') {
+          // Surface mic-permission style errors gently
+          setHistory(h => [
+            ...h,
+            { role: 'assistant', text: `Voice input failed (${e.error}). Make sure mic permission is granted.` },
+          ]);
+        }
+      };
+      recog.onend = () => {
+        setListening(false);
+        const text = finalText.trim();
+        if (text) {
+          // Auto-send the final transcript
+          setTimeout(() => send(text), 200);
+        }
+      };
+      recogRef.current = recog;
+      setInput('');
+      setListening(true);
+      recog.start();
+    } catch (err) {
+      setListening(false);
+    }
+  };
+
+  // Stop the recogniser if the panel is closed while it's listening
+  useEffect(() => {
+    if (!open && listening) {
+      try { recogRef.current?.stop(); } catch {}
+      setListening(false);
+    }
+  }, [open, listening]);
 
   const lastBotFollowups = (() => {
     for (let i = history.length - 1; i >= 0; i--) {
@@ -169,12 +242,26 @@ export default function ChatFab() {
 
               {/* Input */}
               <View style={styles.inputRow}>
+                {voiceAvailable && (
+                  <TouchableOpacity
+                    testID="chat-mic"
+                    onPress={toggleVoice}
+                    style={[styles.micBtn, listening && styles.micBtnActive]}
+                    accessibilityLabel={listening ? 'Stop voice input' : 'Start voice input'}
+                  >
+                    <Ionicons
+                      name={listening ? 'mic' : 'mic-outline'}
+                      size={20}
+                      color={listening ? colors.white : colors.navy}
+                    />
+                  </TouchableOpacity>
+                )}
                 <TextInput
                   testID="chat-input"
                   style={styles.input}
                   value={input}
                   onChangeText={setInput}
-                  placeholder="Ask about TH styling, VM, KPIs…"
+                  placeholder={listening ? '🎙️  Listening…' : 'Ask about TH styling, VM, KPIs…'}
                   placeholderTextColor={colors.textMuted}
                   onSubmitEditing={() => send()}
                   multiline
@@ -192,9 +279,17 @@ export default function ChatFab() {
                   <Ionicons name="send" size={18} color={colors.white} />
                 </TouchableOpacity>
               </View>
+              {listening && (
+                <View style={styles.listeningBar}>
+                  <View style={styles.pulseDot} />
+                  <Text style={styles.listeningText}>Listening — speak your question, I'll send it when you pause</Text>
+                </View>
+              )}
               <View style={styles.footer}>
                 <Ionicons name="lock-closed" size={10} color={colors.textMuted} />
-                <Text style={styles.footerText}>Runs 100% offline · no data leaves your device</Text>
+                <Text style={styles.footerText}>
+                  Runs 100% offline · no data leaves your device{voiceAvailable ? ' · 🎤 voice supported' : ''}
+                </Text>
               </View>
             </KeyboardAvoidingView>
           </View>
@@ -275,6 +370,26 @@ const styles = StyleSheet.create({
   sendBtn: {
     width: 44, height: 44, borderRadius: 22, backgroundColor: colors.navy,
     alignItems: 'center', justifyContent: 'center',
+  },
+  micBtn: {
+    width: 44, height: 44, borderRadius: 22,
+    borderWidth: 1.5, borderColor: colors.navy, backgroundColor: colors.white,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  micBtnActive: {
+    backgroundColor: colors.red, borderColor: colors.red,
+  },
+  listeningBar: {
+    flexDirection: 'row', alignItems: 'center', gap: 8,
+    paddingHorizontal: 12, paddingVertical: 6,
+    backgroundColor: '#FEF2F2',
+    borderTopWidth: 1, borderTopColor: '#FECACA',
+  },
+  pulseDot: {
+    width: 8, height: 8, borderRadius: 4, backgroundColor: colors.red,
+  },
+  listeningText: {
+    flex: 1, fontSize: 11, color: colors.red, fontWeight: '700',
   },
   footer: {
     flexDirection: 'row', alignItems: 'center', gap: 6, justifyContent: 'center',
