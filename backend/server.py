@@ -123,6 +123,9 @@ async def generate_insights(req: InsightsRequest):
         raise HTTPException(status_code=500, detail=f"Insight generation failed: {e}")
 
 
+# ---------- (chat endpoint removed — chatbot is now fully offline / client-side) ----------
+
+
 app.include_router(api_router)
 
 app.add_middleware(

@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeProvider } from '../lib/themeContext';
+import ChatFab from '../lib/chatFab';
 
 const goBack = () => {
   if (router.canGoBack()) router.back();
@@ -62,6 +63,7 @@ export default function RootLayout() {
           <Stack.Screen name="jog-promo" options={{ title: 'JOG Promo' }} />
           <Stack.Screen name="settings" options={{ title: 'Settings' }} />
         </Stack>
+        <ChatFab />
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
