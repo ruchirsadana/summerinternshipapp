@@ -14,7 +14,7 @@ const STORAGE_KEY = 'th.chatHistory';
 
 const INITIAL_GREETING: Turn = {
   role: 'assistant',
-  text: "Hey! 👋 I'm TH Concierge — your offline pocket-coach on Tommy Hilfiger styling, retail KPIs, VM standards, and customer scripts. No internet needed. Ask me anything!",
+  text: "Hey! 👋 I'm Tommy — your offline pocket-coach on Tommy Hilfiger styling, retail KPIs, VM standards, and customer scripts. No internet needed. Ask me anything!",
   followups: STARTERS.slice(0, 4),
 };
 
@@ -164,7 +164,7 @@ export default function ChatFab() {
         >
           <Ionicons name="chatbubble-ellipses" size={26} color={colors.white} />
           <View style={styles.fabBadge}>
-            <Text style={styles.fabBadgeText}>GenAI</Text>
+            <Text style={styles.fabBadgeText}>Tommy</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -179,7 +179,7 @@ export default function ChatFab() {
                 <Ionicons name="sparkles" size={18} color={colors.white} />
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.headerTitle}>TH Concierge</Text>
+                <Text style={styles.headerTitle}>Tommy</Text>
                 <Text style={styles.headerSub}>Styling · KPIs · VM · Scripts</Text>
               </View>
               <TouchableOpacity onPress={reset} style={styles.headerBtn} testID="chat-reset" accessibilityLabel="Clear chat">
