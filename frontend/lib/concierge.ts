@@ -289,7 +289,7 @@ const KB: KnowledgeEntry[] = [
   {
     keys: ['who are you', 'what are you', 'what can you do', 'your name', 'whats your name'],
     replies: [
-      'I\'m Tommy — your built-in helper inside the Growth Intelligence app. I know Tommy Hilfiger product, styling, VM standards, retail KPIs, and sales scripts. I run fully offline, so I won\'t use any data or credits.',
+      'I\'m your built-in retail helper inside the Growth Intelligence app. I know Tommy Hilfiger product, styling, VM standards, retail KPIs, and sales scripts. I run fully offline, so I won\'t use any data or credits.',
     ],
     followups: ['Show me styling tips', 'KPI cheatsheet', 'VM standards'],
   },
