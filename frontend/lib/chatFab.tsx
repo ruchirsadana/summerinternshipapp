@@ -5,17 +5,22 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { colors, radius, shadow } from './theme';
+import { colors, radius } from './theme';
 import { answer, STARTERS } from './concierge';
+import { answerSfa, SFA_STARTERS } from './sfaBrain';
 
 interface Turn { role: 'user' | 'assistant'; text: string; followups?: string[] }
 
 const STORAGE_KEY = 'th.chatHistory';
 
+/** Lets any screen open the assistant (optionally sending a question straight away). */
+let opener: ((q?: string) => void) | null = null;
+export const openChat = (q?: string) => opener?.(q);
+
 const INITIAL_GREETING: Turn = {
   role: 'assistant',
-  text: "Hey! 👋 Your offline pocket-coach on Tommy Hilfiger styling, retail KPIs, VM standards, and customer scripts. No internet needed. Ask me anything!",
-  followups: STARTERS.slice(0, 4),
+  text: "Hey! 👋 Your offline pocket-coach for Tommy Hilfiger styling, retail KPIs, VM and your personal SFA — I can plan your day, add tasks and deals, and draft client messages. Ask me anything!",
+  followups: [...SFA_STARTERS.slice(0, 2), ...STARTERS.slice(0, 2)],
 };
 
 /** Simulated "typing" delay so the bot feels less robotic. */
@@ -68,12 +73,23 @@ export default function ChatFab() {
     setInput('');
     setHistory(h => [...h, { role: 'user', text: message }]);
     setBusy(true);
-    setTimeout(() => {
-      const reply = answer(message);
+    setTimeout(async () => {
+      let reply = answer(message);
+      try { reply = (await answerSfa(message)) ?? reply; } catch {}
       setHistory(h => [...h, { role: 'assistant', text: reply.text, followups: reply.followups }]);
       setBusy(false);
     }, TYPE_DELAY);
   };
+
+  const sendRef = useRef(send);
+  sendRef.current = send;
+  useEffect(() => {
+    opener = (q?: string) => {
+      setOpen(true);
+      if (q) setTimeout(() => sendRef.current(q), 350);
+    };
+    return () => { opener = null; };
+  }, []);
 
   const reset = () => {
     setHistory([INITIAL_GREETING]);
@@ -162,7 +178,7 @@ export default function ChatFab() {
           onPress={() => setOpen(true)}
           style={styles.fab}
         >
-          <Ionicons name="chatbubble-ellipses" size={26} color={colors.white} />
+          <Ionicons name="chatbubble-ellipses" size={26} color={colors.onFill} />
         </TouchableOpacity>
       </View>
 
@@ -173,17 +189,17 @@ export default function ChatFab() {
             {/* Header */}
             <View style={styles.header}>
               <View style={styles.headerAvatar}>
-                <Ionicons name="sparkles" size={18} color={colors.white} />
+                <Ionicons name="sparkles" size={18} color={colors.onFill} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.headerTitle}>Chat Assistant</Text>
-                <Text style={styles.headerSub}>Styling · KPIs · VM · Scripts</Text>
+                <Text style={styles.headerSub}>Styling · KPIs · VM · SFA</Text>
               </View>
               <TouchableOpacity onPress={reset} style={styles.headerBtn} testID="chat-reset" accessibilityLabel="Clear chat">
-                <Ionicons name="refresh" size={18} color={colors.white} />
+                <Ionicons name="refresh" size={18} color={colors.onFill} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setOpen(false)} style={styles.headerBtn} testID="chat-close">
-                <Ionicons name="close" size={22} color={colors.white} />
+                <Ionicons name="close" size={22} color={colors.onFill} />
               </TouchableOpacity>
             </View>
 
@@ -203,7 +219,7 @@ export default function ChatFab() {
                     key={i}
                     style={[styles.bubble, t.role === 'user' ? styles.bubbleUser : styles.bubbleBot]}
                   >
-                    <Text style={[styles.bubbleText, t.role === 'user' && { color: colors.white }]}>
+                    <Text style={[styles.bubbleText, t.role === 'user' && { color: colors.onFill }]}>
                       {t.text}
                     </Text>
                   </View>
@@ -249,7 +265,7 @@ export default function ChatFab() {
                     <Ionicons
                       name={listening ? 'mic' : 'mic-outline'}
                       size={20}
-                      color={listening ? colors.white : colors.navy}
+                      color={listening ? colors.onFill : colors.navy}
                     />
                   </TouchableOpacity>
                 )}
@@ -273,7 +289,7 @@ export default function ChatFab() {
                   style={[styles.sendBtn, (busy || !input.trim()) && { opacity: 0.5 }]}
                   accessibilityLabel="Send message"
                 >
-                  <Ionicons name="send" size={18} color={colors.white} />
+                  <Ionicons name="send" size={18} color={colors.onFill} />
                 </TouchableOpacity>
               </View>
               {listening && (
@@ -306,48 +322,45 @@ const styles = StyleSheet.create({
   },
   fab: {
     width: 56, height: 56, borderRadius: 28,
-    backgroundColor: colors.red, alignItems: 'center', justifyContent: 'center',
-    ...shadow.elevated,
-    shadowColor: colors.red, shadowOpacity: 0.35, shadowRadius: 12, shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
+    backgroundColor: colors.fill, alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1, borderColor: colors.onFill,
   },
   fabBadge: {
     position: 'absolute', top: -6, right: -8,
     backgroundColor: colors.gold, paddingHorizontal: 6, paddingVertical: 2,
     borderRadius: 9, borderWidth: 1.5, borderColor: colors.white,
   },
-  fabBadgeText: { color: colors.navy, fontSize: 9, fontWeight: '900', letterSpacing: 0.4 },
-  backdrop: { flex: 1, backgroundColor: 'rgba(15,26,48,0.55)', justifyContent: 'flex-end' },
+  fabBadgeText: { color: colors.navy, fontSize: 9, fontWeight: '500', letterSpacing: 0.4 },
+  backdrop: { flex: 1, backgroundColor: 'rgba(17,17,17,0.6)', justifyContent: 'flex-end' },
   panel: {
     height: '85%',
     backgroundColor: colors.bg,
-    borderTopLeftRadius: 22, borderTopRightRadius: 22,
+    borderTopLeftRadius: 0, borderTopRightRadius: 0,
     overflow: 'hidden',
   },
   header: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
-    backgroundColor: colors.navy, paddingHorizontal: 14, paddingVertical: 12, paddingTop: 14,
+    backgroundColor: colors.fill, paddingHorizontal: 14, paddingVertical: 12, paddingTop: 14,
   },
   headerAvatar: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: colors.red,
+    width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(0,0,0,0.08)',
     alignItems: 'center', justifyContent: 'center',
   },
-  headerTitle: { color: colors.white, fontSize: 16, fontWeight: '800', letterSpacing: 0.2 },
-  headerSub: { color: '#AAB5CE', fontSize: 11, fontWeight: '600', marginTop: 2 },
+  headerTitle: { color: colors.onFill, fontSize: 16, fontWeight: '500', letterSpacing: 0.2 },
+  headerSub: { color: colors.onFillMuted, fontSize: 11, fontWeight: '500', marginTop: 2 },
   headerBtn: {
     width: 34, height: 34, borderRadius: 17,
-    alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.12)',
+    alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.08)',
   },
   body: { flex: 1, backgroundColor: colors.bg },
   bubble: {
-    maxWidth: '88%' as any, borderRadius: 16, paddingHorizontal: 12, paddingVertical: 10,
+    maxWidth: '88%' as any, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 10,
   },
   bubbleUser: {
-    alignSelf: 'flex-end', backgroundColor: colors.red, borderBottomRightRadius: 4,
+    alignSelf: 'flex-end', backgroundColor: colors.fill, borderBottomRightRadius: 4,
   },
   bubbleBot: {
-    alignSelf: 'flex-start', backgroundColor: colors.white,
-    borderWidth: 1, borderColor: colors.borderLight, borderBottomLeftRadius: 4,
+    alignSelf: 'flex-start', backgroundColor: colors.mist, borderBottomLeftRadius: 4,
   },
   bubbleText: { color: colors.textPrimary, fontSize: 14, lineHeight: 20 },
   typing: { flexDirection: 'row', gap: 5, alignItems: 'center', paddingVertical: 14 },
@@ -359,13 +372,12 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1, minHeight: 44, maxHeight: 120,
-    backgroundColor: colors.bg, borderRadius: radius.md,
+    backgroundColor: colors.mist, borderRadius: radius.search,
     paddingHorizontal: 14, paddingVertical: 12,
     fontSize: 14, color: colors.textPrimary,
-    borderWidth: 1, borderColor: colors.border,
   },
   sendBtn: {
-    width: 44, height: 44, borderRadius: 22, backgroundColor: colors.navy,
+    width: 44, height: 44, borderRadius: 22, backgroundColor: colors.fill,
     alignItems: 'center', justifyContent: 'center',
   },
   micBtn: {
@@ -374,34 +386,34 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   micBtnActive: {
-    backgroundColor: colors.red, borderColor: colors.red,
+    backgroundColor: colors.fill, borderColor: colors.fill,
   },
   listeningBar: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     paddingHorizontal: 12, paddingVertical: 6,
-    backgroundColor: '#FEF2F2',
-    borderTopWidth: 1, borderTopColor: '#FECACA',
+    backgroundColor: '#F5F5F5',
+    borderTopWidth: 1, borderTopColor: '#E5E5E5',
   },
   pulseDot: {
-    width: 8, height: 8, borderRadius: 4, backgroundColor: colors.red,
+    width: 8, height: 8, borderRadius: 4, backgroundColor: colors.npsRed,
   },
   listeningText: {
-    flex: 1, fontSize: 11, color: colors.red, fontWeight: '700',
+    flex: 1, fontSize: 11, color: colors.red, fontWeight: '500',
   },
   footer: {
     flexDirection: 'row', alignItems: 'center', gap: 6, justifyContent: 'center',
     paddingHorizontal: 12, paddingTop: 4, paddingBottom: Platform.OS === 'ios' ? 24 : 10,
     backgroundColor: colors.white,
   },
-  footerText: { fontSize: 10, color: colors.textMuted, fontWeight: '600' },
+  footerText: { fontSize: 10, color: colors.textMuted, fontWeight: '500' },
   suggestionsLabel: {
-    fontSize: 10, fontWeight: '800', color: colors.textMuted,
+    fontSize: 10, fontWeight: '500', color: colors.textMuted,
     letterSpacing: 0.8, marginBottom: 2,
   },
   suggestion: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
-    backgroundColor: colors.white, padding: 10, borderRadius: radius.md,
-    borderWidth: 1, borderColor: colors.borderLight,
+    backgroundColor: colors.white, paddingHorizontal: 14, paddingVertical: 10, borderRadius: radius.pill,
+    borderWidth: 1, borderColor: colors.border,
   },
-  suggestionText: { flex: 1, color: colors.navy, fontSize: 13, fontWeight: '600' },
+  suggestionText: { flex: 1, color: colors.navy, fontSize: 13, fontWeight: '500' },
 });

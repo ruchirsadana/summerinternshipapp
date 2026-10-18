@@ -4,6 +4,7 @@ import type {
   FieldNote, PipelineLead, Milestone, Settings, InsightCard,
   Employee, DailyKPI, LFLBaseline,
   VMLog, VMScorecard, ZoneSales, BigBill, JogPromoEntry,
+  SfaDeal, SfaTask, SfaActivity,
 } from './types';
 
 const KEYS = {
@@ -26,7 +27,15 @@ const KEYS = {
   bigBills: 'th.bigBills',
   jog: 'th.jog',
   storeSqft: 'th.storeSqft',
+  sfaDeals: 'th.sfaDeals',
+  sfaTasks: 'th.sfaTasks',
+  sfaActivities: 'th.sfaActivities',
 } as const;
+
+/* Lightweight change bus so SFA screens refresh when the chat assistant writes data */
+const sfaListeners = new Set<() => void>();
+export const onSfaChange = (fn: () => void) => { sfaListeners.add(fn); return () => { sfaListeners.delete(fn); }; };
+const emitSfa = <T,>(p: Promise<T>) => p.then(r => { sfaListeners.forEach(l => l()); return r; });
 
 async function getList<T>(key: string): Promise<T[]> {
   const raw = await AsyncStorage.getItem(key);
@@ -195,6 +204,21 @@ export const store = {
   getJogEntries: () => getList<JogPromoEntry>(KEYS.jog),
   addJogEntry: (j: JogPromoEntry) => addItem(KEYS.jog, j),
   deleteJogEntry: (id: string) => deleteItem<JogPromoEntry>(KEYS.jog, id),
+
+  /* ---------- Personal SFA ---------- */
+  getSfaDeals: () => getList<SfaDeal>(KEYS.sfaDeals),
+  addSfaDeal: (d: SfaDeal) => emitSfa(addItem(KEYS.sfaDeals, d)),
+  updateSfaDeal: (id: string, patch: Partial<SfaDeal>) => emitSfa(updateItem<SfaDeal>(KEYS.sfaDeals, id, patch)),
+  deleteSfaDeal: (id: string) => emitSfa(deleteItem<SfaDeal>(KEYS.sfaDeals, id)),
+
+  getSfaTasks: () => getList<SfaTask>(KEYS.sfaTasks),
+  addSfaTask: (t: SfaTask) => emitSfa(addItem(KEYS.sfaTasks, t)),
+  updateSfaTask: (id: string, patch: Partial<SfaTask>) => emitSfa(updateItem<SfaTask>(KEYS.sfaTasks, id, patch)),
+  deleteSfaTask: (id: string) => emitSfa(deleteItem<SfaTask>(KEYS.sfaTasks, id)),
+
+  getSfaActivities: () => getList<SfaActivity>(KEYS.sfaActivities),
+  addSfaActivity: (a: SfaActivity) => emitSfa(addItem(KEYS.sfaActivities, a)),
+  deleteSfaActivity: (id: string) => emitSfa(deleteItem<SfaActivity>(KEYS.sfaActivities, id)),
 
   // Utility: full export
   getAll: async () => ({

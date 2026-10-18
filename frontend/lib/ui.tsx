@@ -36,8 +36,8 @@ export const PrimaryButton: React.FC<{
   variant?: 'primary' | 'accent' | 'outline'; icon?: React.ComponentProps<typeof Ionicons>['name'];
   testID?: string; style?: StyleProp<ViewStyle>;
 }> = ({ label, onPress, loading, disabled, variant = 'primary', icon, testID, style }) => {
-  const bg = variant === 'primary' ? colors.navy : variant === 'accent' ? colors.red : 'transparent';
-  const fg = variant === 'outline' ? colors.navy : colors.white;
+  const bg = variant === 'outline' ? 'transparent' : colors.fill;
+  const fg = variant === 'outline' ? colors.navy : colors.onFill;
   const borderColor = variant === 'outline' ? colors.navy : 'transparent';
   return (
     <TouchableOpacity
@@ -45,7 +45,7 @@ export const PrimaryButton: React.FC<{
       activeOpacity={0.85}
       onPress={onPress}
       disabled={disabled || loading}
-      style={[styles.btn, { backgroundColor: bg, borderColor, borderWidth: variant === 'outline' ? 1.5 : 0, opacity: disabled ? 0.5 : 1 }, style]}
+      style={[styles.btn, { backgroundColor: bg, borderColor, borderWidth: variant === 'outline' ? 1 : 0, opacity: disabled ? 0.5 : 1 }, style]}
     >
       {loading ? <ActivityIndicator color={fg} /> : (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -85,7 +85,7 @@ export const RadioGroup: <T extends string>(p: {
           <View style={[styles.radioDot, selected && { borderColor: colors.navy }]}>
             {selected && <View style={styles.radioDotInner} />}
           </View>
-          <Text style={[styles.radioLabel, selected && { color: colors.navy, fontWeight: '600' }]} numberOfLines={2}>
+          <Text style={[styles.radioLabel, selected && { color: colors.navy, fontWeight: '500' }]} numberOfLines={2}>
             {opt}
           </Text>
         </TouchableOpacity>
@@ -108,10 +108,10 @@ export const CheckboxGroup: React.FC<{
           onPress={() => onChange(selected ? values.filter(v => v !== opt) : [...values, opt])}
           style={[styles.radioRow, selected && styles.radioRowActive]}
         >
-          <View style={[styles.checkBox, selected && { backgroundColor: colors.navy, borderColor: colors.navy }]}>
-            {selected && <Ionicons name="checkmark" size={14} color={colors.white} />}
+          <View style={[styles.checkBox, selected && { backgroundColor: colors.fill, borderColor: colors.fill }]}>
+            {selected && <Ionicons name="checkmark" size={14} color={colors.onFill} />}
           </View>
-          <Text style={[styles.radioLabel, selected && { color: colors.navy, fontWeight: '600' }]}>{opt}</Text>
+          <Text style={[styles.radioLabel, selected && { color: colors.navy, fontWeight: '500' }]}>{opt}</Text>
         </TouchableOpacity>
       );
     })}
@@ -131,14 +131,14 @@ export const StarRating: React.FC<{ value: number; onChange: (v: number) => void
 
 export const Chip: React.FC<{ label: string; tone?: 'navy' | 'red' | 'gold' | 'muted' | 'green'; small?: boolean }> =
   ({ label, tone = 'muted', small }) => {
-    const bgMap = { navy: colors.navy, red: colors.red, gold: colors.gold, muted: '#F1F3F6', green: colors.npsGreen };
-    const fgMap = { navy: colors.white, red: colors.white, gold: colors.white, muted: colors.textSecondary, green: colors.white };
+    const bgMap = { navy: colors.fill, red: colors.fill, gold: colors.fill, muted: '#F5F5F5', green: colors.npsGreen };
+    const fgMap = { navy: colors.onFill, red: colors.onFill, gold: colors.onFill, muted: colors.textSecondary, green: colors.white };
     return (
       <View style={{
         backgroundColor: bgMap[tone], paddingHorizontal: small ? 8 : 12, paddingVertical: small ? 4 : 6,
         borderRadius: radius.pill, alignSelf: 'flex-start',
       }}>
-        <Text style={{ color: fgMap[tone], fontSize: small ? 11 : 12, fontWeight: '700', letterSpacing: 0.3 }}>{label}</Text>
+        <Text style={{ color: fgMap[tone], fontSize: 12, fontWeight: '500' }}>{label}</Text>
       </View>
     );
   };
@@ -156,7 +156,7 @@ export const Stat: React.FC<{ label: string; value: string | number; accent?: st
 
 export const ProgressBar: React.FC<{ progress: number; color?: string }> = ({ progress, color }) => (
   <View style={styles.progressTrack}>
-    <View style={[styles.progressFill, { width: `${Math.min(100, Math.max(0, progress * 100))}%`, backgroundColor: color || colors.navy }]} />
+    <View style={[styles.progressFill, { width: `${Math.min(100, Math.max(0, progress * 100))}%`, backgroundColor: color || colors.fill }]} />
   </View>
 );
 
@@ -172,7 +172,7 @@ export const ScreenWrap: React.FC<{ children: React.ReactNode; refresh?: React.R
 export const EmptyState: React.FC<{ icon: React.ComponentProps<typeof Ionicons>['name']; title: string; body?: string }> =
   ({ icon, title, body }) => (
     <View style={{ alignItems: 'center', padding: 32, gap: 10 }}>
-      <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: '#F1F3F6', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: '#F5F5F5', alignItems: 'center', justifyContent: 'center' }}>
         <Ionicons name={icon} size={32} color={colors.navy} />
       </View>
       <Text style={[font.h3, { color: colors.navy, textAlign: 'center' }]}>{title}</Text>
@@ -192,11 +192,11 @@ const styles = StyleSheet.create({
   sectionSubtitle: { color: colors.textSecondary, fontSize: 13, marginTop: 2 },
   caption: { ...font.caption, color: colors.textSecondary },
   btn: {
-    minHeight: 50, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center',
-    paddingHorizontal: 18,
+    minHeight: 48, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: 20,
   },
-  btnLabel: { fontSize: 16, fontWeight: '700', letterSpacing: 0.3 },
-  inputLabel: { fontSize: 13, color: colors.textSecondary, fontWeight: '600' },
+  btnLabel: { fontSize: 16, fontWeight: '500' },
+  inputLabel: { fontSize: 13, color: colors.textSecondary, fontWeight: '500' },
   input: {
     backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border,
     borderRadius: radius.md, paddingHorizontal: 14, paddingVertical: 12, minHeight: 48,
@@ -206,17 +206,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: radius.md,
     borderWidth: 1.2, borderColor: colors.border, backgroundColor: colors.white, gap: 10,
   },
-  radioRowActive: { borderColor: colors.navy, backgroundColor: '#F5F7FC' },
+  radioRowActive: { borderColor: colors.navy, backgroundColor: '#F5F5F5' },
   radioDot: {
     width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: colors.border,
     alignItems: 'center', justifyContent: 'center',
   },
-  radioDotInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.navy },
+  radioDotInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.fill },
   radioLabel: { fontSize: 14, color: colors.textPrimary, flex: 1 },
   checkBox: {
     width: 22, height: 22, borderRadius: 5, borderWidth: 2, borderColor: colors.border,
     alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white,
   },
-  progressTrack: { height: 8, backgroundColor: colors.border, borderRadius: 4, overflow: 'hidden' },
-  progressFill: { height: 8, borderRadius: 4 },
+  progressTrack: { height: 4, backgroundColor: colors.border, overflow: 'hidden' },
+  progressFill: { height: 4 },
 });

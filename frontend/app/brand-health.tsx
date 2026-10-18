@@ -51,7 +51,7 @@ export default function BrandHealth() {
         <Metric label="Unaided Recall (TH first)" value={cur.recall} prev={prev.recall} suffix="%" />
         <Metric label="Repeat Customer Rate" value={cur.repeat} prev={prev.repeat} suffix="%" />
         <View style={{ marginTop: 10 }}>
-          <Text style={{ fontSize: 11, fontWeight: '700', color: colors.textSecondary, letterSpacing: 0.6 }}>TOP WORD ASSOCIATION</Text>
+          <Text style={{ fontSize: 11, fontWeight: '500', color: colors.textSecondary, letterSpacing: 0.6 }}>TOP WORD ASSOCIATION</Text>
           <Text style={[font.h2, { color: colors.red, marginTop: 4 }]}>{cur.word || '—'}</Text>
         </View>
       </Card>
@@ -78,10 +78,10 @@ const Metric = ({ label, value, prev, suffix }: { label: string; value: number; 
   return (
     <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.borderLight, flexDirection: 'row', alignItems: 'center' }}>
       <View style={{ flex: 1 }}>
-        <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '700', letterSpacing: 0.5 }}>{label.toUpperCase()}</Text>
+        <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '500', letterSpacing: 0.5 }}>{label.toUpperCase()}</Text>
         <Text style={[font.h2, { color: colors.navy, marginTop: 2 }]}>{value}{suffix}</Text>
       </View>
-      <Text style={{ color, fontSize: 14, fontWeight: '800' }}>{up ? '▲' : down ? '▼' : '—'} {Math.abs(delta).toFixed(suffix === '★' ? 2 : 0)}{suffix}</Text>
+      <Text style={{ color, fontSize: 14, fontWeight: '500' }}>{up ? '▲' : down ? '▼' : '—'} {Math.abs(delta).toFixed(suffix === '★' ? 2 : 0)}{suffix}</Text>
     </View>
   );
 };

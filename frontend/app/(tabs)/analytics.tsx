@@ -140,14 +140,14 @@ export default function Analytics() {
 const Legend = ({ color, label }: { color: string; label: string }) => (
   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
     <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: color }} />
-    <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: '600' }}>{label}</Text>
+    <Text style={{ fontSize: 12, color: colors.textSecondary, fontWeight: '500' }}>{label}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
-  caption: { fontSize: 11, color: colors.textSecondary, fontWeight: '700', letterSpacing: 0.8 },
+  caption: { fontSize: 11, color: colors.textSecondary, fontWeight: '500', letterSpacing: 0.8 },
   listRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: colors.borderLight },
-  rank: { fontSize: 16, fontWeight: '800', color: colors.red, width: 26 },
+  rank: { fontSize: 16, fontWeight: '500', color: colors.red, width: 26 },
   listLabel: { flex: 1, fontSize: 14, color: colors.textPrimary },
-  listCount: { fontSize: 14, fontWeight: '700', color: colors.navy },
+  listCount: { fontSize: 14, fontWeight: '500', color: colors.navy },
 });

@@ -226,7 +226,7 @@ export default function Export() {
 
       <Card>
         <SectionTitle title="Weekly Report" subtitle="Auto-summary" />
-        <View style={{ backgroundColor: '#F9FAFB', padding: 12, borderRadius: 10 }}>
+        <View style={{ backgroundColor: '#F5F5F5', padding: 12, borderRadius: 10 }}>
           <Text style={{ color: colors.textPrimary, fontSize: 13, lineHeight: 20 }}>{weeklyReport}</Text>
         </View>
         <PrimaryButton label="Share Report" icon="share-social" onPress={shareReport} testID="share-report" style={{ marginTop: 10 }} />
@@ -235,10 +235,10 @@ export default function Export() {
       <Card>
         <SectionTitle title="Where is my data stored?" />
         <Text style={{ color: colors.textSecondary, fontSize: 13, lineHeight: 20 }}>
-          All your data is stored <Text style={{ fontWeight: '800', color: colors.navy }}>locally on this device</Text> using AsyncStorage — nothing is sent to any server except when you tap "Generate AI Insights". Uninstalling the app or clearing browser data will wipe everything.
+          All your data is stored <Text style={{ fontWeight: '500', color: colors.navy }}>locally on this device</Text> using AsyncStorage — nothing is sent to any server except when you tap "Generate AI Insights". Uninstalling the app or clearing browser data will wipe everything.
         </Text>
         <Text style={{ color: colors.textSecondary, fontSize: 13, lineHeight: 20, marginTop: 6 }}>
-          <Text style={{ fontWeight: '800' }}>Recommendation</Text>: Use "Share All Data" above weekly and save the CSV to email or Drive as a backup.
+          <Text style={{ fontWeight: '500' }}>Recommendation</Text>: Use "Share All Data" above weekly and save the CSV to email or Drive as a backup.
         </Text>
       </Card>
     </ScreenWrap>

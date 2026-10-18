@@ -7,9 +7,10 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerStyle: { backgroundColor: colors.navy },
-        headerTintColor: colors.white,
-        headerTitleStyle: { fontWeight: '700' },
+        headerStyle: { backgroundColor: colors.white, borderBottomWidth: 1, borderBottomColor: colors.border, elevation: 0, shadowOpacity: 0 } as any,
+        headerShadowVisible: false,
+        headerTintColor: colors.navy,
+        headerTitleStyle: { fontWeight: '500', fontSize: 20 },
         tabBarActiveTintColor: colors.navy,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
@@ -19,7 +20,7 @@ export default function TabLayout() {
           paddingBottom: 6,
           paddingTop: 6,
         },
-        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: '500' },
       }}
     >
       <Tabs.Screen
@@ -45,10 +46,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="customers"
+        name="sfa"
         options={{
-          title: 'Leads',
-          tabBarIcon: ({ color, size }) => <Ionicons name="people" size={size} color={color} />,
+          title: 'SFA',
+          headerTitle: 'My SFA',
+          tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'briefcase' : 'briefcase-outline'} size={size} color={color} />,
         }}
       />
       <Tabs.Screen

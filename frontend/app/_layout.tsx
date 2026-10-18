@@ -15,13 +15,13 @@ const goBack = () => {
 
 const BackButton = () => (
   <TouchableOpacity onPress={goBack} testID="header-back" style={{ paddingHorizontal: 12, paddingVertical: 4 }}>
-    <Ionicons name="chevron-back" size={26} color="#FFFFFF" />
+    <Ionicons name="chevron-back" size={26} color="#111111" />
   </TouchableOpacity>
 );
 
 const HomeButton = () => (
   <TouchableOpacity onPress={() => router.replace('/')} testID="header-home" style={{ paddingHorizontal: 12, paddingVertical: 4 }}>
-    <Ionicons name="home" size={22} color="#FFFFFF" />
+    <Ionicons name="home-outline" size={22} color="#111111" />
   </TouchableOpacity>
 );
 
@@ -30,13 +30,14 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ThemeProvider>
-        <StatusBar style="light" />
+        <StatusBar style="auto" />
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: '#1B2A4A' },
-            headerTintColor: '#FFFFFF',
-            headerTitleStyle: { fontWeight: '700' },
-            contentStyle: { backgroundColor: '#F6F7FB' },
+            headerStyle: { backgroundColor: '#FFFFFF' },
+            headerShadowVisible: false,
+            headerTintColor: '#111111',
+            headerTitleStyle: { fontWeight: '500', fontSize: 20 },
+            contentStyle: { backgroundColor: '#FFFFFF' },
             headerBackVisible: false,
             headerLeft: () => <BackButton />,
             headerRight: () => <HomeButton />,

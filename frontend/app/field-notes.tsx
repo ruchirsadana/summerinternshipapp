@@ -36,7 +36,7 @@ export default function FieldNotes() {
       {list.length === 0 && <Card><EmptyState icon="book-outline" title="Start your log" body="One observation a day builds a goldmine." /></Card>}
       {list.map(n => (
         <Card key={n.id} testID={`fn-${n.id}`}>
-          <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '700' }}>{new Date(n.createdAt).toLocaleString()}</Text>
+          <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '500' }}>{new Date(n.createdAt).toLocaleString()}</Text>
           {!!n.observation && <LogRow label="OBSERVATION" text={n.observation} color={colors.navy} />}
           {!!n.idea && <LogRow label="IDEA" text={n.idea} color={colors.red} />}
           {!!n.anomaly && <LogRow label="ANOMALY" text={n.anomaly} color={colors.gold} />}
@@ -48,7 +48,7 @@ export default function FieldNotes() {
 
 const LogRow = ({ label, text, color }: { label: string; text: string; color: string }) => (
   <View style={{ marginTop: 8 }}>
-    <Text style={{ color, fontSize: 10, fontWeight: '800', letterSpacing: 0.8 }}>{label}</Text>
+    <Text style={{ color, fontSize: 10, fontWeight: '500', letterSpacing: 0.8 }}>{label}</Text>
     <Text style={{ color: colors.textPrimary, fontSize: 14, marginTop: 2 }}>{text}</Text>
   </View>
 );

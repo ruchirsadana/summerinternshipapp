@@ -27,7 +27,7 @@ export default function Calculator() {
                 onPress={() => setMode(m)}
                 style={[styles.segmentBtn, mode === m && styles.segmentBtnActive]}
               >
-                <Text style={[styles.segmentText, mode === m && { color: colors.white }]}>
+                <Text style={[styles.segmentText, mode === m && { color: colors.onFill }]}>
                   {m === 'daily' ? 'Daily' : m === 'lfl' ? 'YoY / LFL' : m === 'target' ? 'Target' : 'Customer'}
                 </Text>
               </TouchableOpacity>
@@ -234,12 +234,12 @@ function CustomerCalculator() {
         </View>
         <View style={[styles.verdictRow, { backgroundColor: rprVerdict.color + '22' }]}>
           <View style={{ flex: 1 }}>
-            <Text style={{ color: colors.navy, fontWeight: '800', fontSize: 15 }}>Repeat Rate</Text>
+            <Text style={{ color: colors.navy, fontWeight: '500', fontSize: 15 }}>Repeat Rate</Text>
             <Text style={{ color: colors.textMuted, fontSize: 11 }}>Benchmark: 30%+ healthy · &lt;10% at risk</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ color: rprVerdict.color, fontSize: 24, fontWeight: '800' }}>{rpr.toFixed(1)}%</Text>
-            <Text style={{ color: rprVerdict.color, fontSize: 10, fontWeight: '800', letterSpacing: 0.5 }}>{rprVerdict.text}</Text>
+            <Text style={{ color: rprVerdict.color, fontSize: 24, fontWeight: '500' }}>{rpr.toFixed(1)}%</Text>
+            <Text style={{ color: rprVerdict.color, fontSize: 10, fontWeight: '500', letterSpacing: 0.5 }}>{rprVerdict.text}</Text>
           </View>
         </View>
       </Card>
@@ -252,12 +252,12 @@ function CustomerCalculator() {
         </View>
         <View style={[styles.verdictRow, { backgroundColor: churnVerdict.color + '22' }]}>
           <View style={{ flex: 1 }}>
-            <Text style={{ color: colors.navy, fontWeight: '800', fontSize: 15 }}>Churn</Text>
+            <Text style={{ color: colors.navy, fontWeight: '500', fontSize: 15 }}>Churn</Text>
             <Text style={{ color: colors.textMuted, fontSize: 11 }}>Retention {sc ? retention.toFixed(1) : '—'}% · Benchmark: ≤5% healthy</Text>
           </View>
           <View style={{ alignItems: 'flex-end' }}>
-            <Text style={{ color: churnVerdict.color, fontSize: 24, fontWeight: '800' }}>{churn.toFixed(1)}%</Text>
-            <Text style={{ color: churnVerdict.color, fontSize: 10, fontWeight: '800', letterSpacing: 0.5 }}>{churnVerdict.text}</Text>
+            <Text style={{ color: churnVerdict.color, fontSize: 24, fontWeight: '500' }}>{churn.toFixed(1)}%</Text>
+            <Text style={{ color: churnVerdict.color, fontSize: 10, fontWeight: '500', letterSpacing: 0.5 }}>{churnVerdict.text}</Text>
           </View>
         </View>
       </Card>
@@ -306,10 +306,10 @@ function TargetCalculator() {
 const ResultRow = ({ label, help, value }: { label: string; help: string; value: string }) => (
   <View style={styles.resultRow}>
     <View style={{ flex: 1 }}>
-      <Text style={{ color: colors.navy, fontWeight: '800', fontSize: 15 }}>{label}</Text>
+      <Text style={{ color: colors.navy, fontWeight: '500', fontSize: 15 }}>{label}</Text>
       <Text style={{ color: colors.textMuted, fontSize: 11, marginTop: 2 }}>{help}</Text>
     </View>
-    <Text style={{ color: colors.red, fontSize: 22, fontWeight: '800' }}>{value}</Text>
+    <Text style={{ color: colors.red, fontSize: 22, fontWeight: '500' }}>{value}</Text>
   </View>
 );
 
@@ -318,12 +318,12 @@ const CompareRow = ({ label, cur, prior, pct }: { label: string; cur: string; pr
   const color = pos ? colors.npsGreen : neg ? colors.red : colors.textMuted;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.borderLight }}>
-      <Text style={{ width: 70, color: colors.navy, fontWeight: '800' }}>{label}</Text>
+      <Text style={{ width: 70, color: colors.navy, fontWeight: '500' }}>{label}</Text>
       <View style={{ flex: 1 }}>
         <Text style={{ color: colors.textPrimary, fontSize: 14 }}>{cur}</Text>
         <Text style={{ color: colors.textMuted, fontSize: 11 }}>vs {prior}</Text>
       </View>
-      <Text style={{ color, fontWeight: '800', fontSize: 16 }}>
+      <Text style={{ color, fontWeight: '500', fontSize: 16 }}>
         {pct ? (pos ? '▲' : neg ? '▼' : '—') + ' ' + fmtPct(pct) : '—'}
       </Text>
     </View>
@@ -333,7 +333,7 @@ const CompareRow = ({ label, cur, prior, pct }: { label: string; cur: string; pr
 const Formula = ({ label, body }: { label: string; body: string }) => (
   <View style={{ flexDirection: 'row', paddingVertical: 6, gap: 12 }}>
     <View style={{ width: 90 }}>
-      <Text style={{ color: colors.red, fontWeight: '800' }}>{label}</Text>
+      <Text style={{ color: colors.red, fontWeight: '500' }}>{label}</Text>
     </View>
     <Text style={{ color: colors.textSecondary, flex: 1, fontSize: 13 }}>{body}</Text>
   </View>
@@ -346,18 +346,18 @@ const styles = StyleSheet.create({
     borderRadius: radius.md, borderWidth: 1.2, borderColor: colors.navy,
     backgroundColor: colors.white, alignItems: 'center',
   },
-  segmentBtnActive: { backgroundColor: colors.navy },
-  segmentText: { color: colors.navy, fontWeight: '700', fontSize: 12 },
+  segmentBtnActive: { backgroundColor: colors.fill },
+  segmentText: { color: colors.navy, fontWeight: '500', fontSize: 12 },
   resultRow: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: 12,
     borderBottomWidth: 1, borderBottomColor: colors.borderLight,
   },
   autofillChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start',
-    backgroundColor: '#F1F3F6', borderRadius: radius.pill,
+    backgroundColor: '#F5F5F5', borderRadius: radius.pill,
     paddingHorizontal: 10, paddingVertical: 6, marginVertical: 6,
   },
-  autofillText: { color: colors.navy, fontWeight: '700', fontSize: 12 },
+  autofillText: { color: colors.navy, fontWeight: '500', fontSize: 12 },
   verdictRow: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     padding: 12, borderRadius: radius.md, marginTop: 8,

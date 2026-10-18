@@ -36,14 +36,14 @@ export default function OccasionMapper() {
           <Card key={reason}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={[font.h3, { color: colors.red, flex: 1 }]}>{reason}</Text>
-              <Text style={{ color: colors.navy, fontWeight: '800' }}>{list.length}×</Text>
+              <Text style={{ color: colors.navy, fontWeight: '500' }}>{list.length}×</Text>
             </View>
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
               {topCats.map(([c, n]) => <Chip key={c} label={`${c} (${n})`} tone="navy" small />)}
             </View>
             {topSpend && (
               <Text style={{ color: colors.textSecondary, fontSize: 13, marginTop: 8 }}>
-                Typical spend: <Text style={{ color: colors.gold, fontWeight: '800' }}>{topSpend[0]}</Text>
+                Typical spend: <Text style={{ color: colors.gold, fontWeight: '500' }}>{topSpend[0]}</Text>
               </Text>
             )}
           </Card>

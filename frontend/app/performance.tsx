@@ -195,7 +195,7 @@ export default function Performance() {
             )}
           </View>
           <TouchableOpacity onPress={() => setLflOpen(true)} testID="set-lfl-btn">
-            <Text style={{ color: colors.red, fontSize: 13, fontWeight: '700', marginTop: 10 }}>
+            <Text style={{ color: colors.red, fontSize: 13, fontWeight: '500', marginTop: 10 }}>
               {lfl ? '✏️ Edit LFL baseline' : '+ Set LFL (prior year) baseline'}
             </Text>
           </TouchableOpacity>
@@ -239,7 +239,7 @@ export default function Performance() {
             subtitle={`${bigBills.length} total · hall of fame`}
             right={
               <TouchableOpacity onPress={() => setBigBillOpen(true)} testID="add-big-bill" style={styles.addBtn}>
-                <Ionicons name="add" size={18} color={colors.white} />
+                <Ionicons name="add" size={18} color={colors.onFill} />
               </TouchableOpacity>
             }
           />
@@ -255,10 +255,10 @@ export default function Performance() {
             return (
               <View key={b.id} style={styles.bigBillRow} testID={`big-bill-${b.id}`}>
                 <View style={styles.bbAmount}>
-                  <Text style={{ color: colors.white, fontSize: 15, fontWeight: '800' }}>{fmtINR(b.amount)}</Text>
+                  <Text style={{ color: colors.onFill, fontSize: 15, fontWeight: '500' }}>{fmtINR(b.amount)}</Text>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ color: colors.navy, fontSize: 14, fontWeight: '700' }}>{emp?.name || '—'}</Text>
+                  <Text style={{ color: colors.navy, fontSize: 14, fontWeight: '500' }}>{emp?.name || '—'}</Text>
                   <Text style={{ color: colors.textSecondary, fontSize: 12 }}>{b.date} · {b.customerName || 'Walk-in'}</Text>
                   {!!b.items && <Text style={{ color: colors.textMuted, fontSize: 12 }} numberOfLines={1}>{b.items}</Text>}
                 </View>
@@ -310,8 +310,8 @@ export default function Performance() {
 
 const MTDCell = ({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) => (
   <View style={styles.mtdCell}>
-    <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: '800', letterSpacing: 0.6 }}>{label.toUpperCase()}</Text>
-    <Text style={{ fontSize: 18, color: color || colors.navy, fontWeight: '800', marginTop: 4 }}>{value}</Text>
+    <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: '500', letterSpacing: 0.6 }}>{label.toUpperCase()}</Text>
+    <Text style={{ fontSize: 18, color: color || colors.navy, fontWeight: '500', marginTop: 4 }}>{value}</Text>
     {!!sub && <Text style={{ fontSize: 10, color: colors.textMuted, marginTop: 2 }}>{sub}</Text>}
   </View>
 );
@@ -380,22 +380,22 @@ function BigBillModal({ open, employees, onClose, onSaved }: {
     <Modal visible={open} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <View style={styles.modalHeader}>
-          <Text style={[font.h3, { color: colors.white }]}>Log Big Bill · &gt; ₹20,000</Text>
-          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.white} /></TouchableOpacity>
+          <Text style={[font.h3, { color: colors.onFill }]}>Log Big Bill · &gt; ₹20,000</Text>
+          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.onFill} /></TouchableOpacity>
         </View>
         <ScreenWrap>
           <Input label="Date" value={date} onChangeText={setDate} testID="bb-date" />
           <Input label="Bill amount (₹)" value={amount} onChangeText={setAmount} keyboardType="numeric" testID="bb-amount" />
-          <Text style={{ color: colors.textSecondary, fontSize: 13, fontWeight: '700' }}>Staff</Text>
+          <Text style={{ color: colors.textSecondary, fontSize: 13, fontWeight: '500' }}>Staff</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
             {employees.map(e => (
               <TouchableOpacity
                 key={e.id}
                 onPress={() => setEmpId(e.id)}
-                style={[styles.empChip, empId === e.id && { backgroundColor: colors.navy }]}
+                style={[styles.empChip, empId === e.id && { backgroundColor: colors.fill }]}
                 testID={`bb-emp-${e.id}`}
               >
-                <Text style={{ color: empId === e.id ? colors.white : colors.navy, fontWeight: '700', fontSize: 12 }}>{e.name}</Text>
+                <Text style={{ color: empId === e.id ? colors.onFill : colors.navy, fontWeight: '500', fontSize: 12 }}>{e.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -413,13 +413,13 @@ const Row = ({ label, cells, header, tone, wide, deltas, rankBg }: {
 }) => {
   // Header uses an explicit blue/text color NOT in the dark-theme CSS remap so the
   // header reads as dark blue on a light strip even when the rest of the app flips dark.
-  const HEADER_BG = '#DDE4F5';
-  const HEADER_TEXT = '#0F2D78';
+  const HEADER_BG = '#F5F5F5';
+  const HEADER_TEXT = '#111111';
   const bg = header ? HEADER_BG
     : rankBg ? rankBg
-    : tone === 'current' ? '#FFF9E6'
+    : tone === 'current' ? '#F5F5F5'
     : tone === 'lfl' ? '#F5F5F5'
-    : tone === 'top' ? '#E8F5E9'
+    : tone === 'top' ? '#F5F5F5'
     : '#FFFFFF';
   const isRank = !!rankBg;
   const textColor = header ? HEADER_TEXT : isRank ? '#FFFFFF' : colors.textPrimary;
@@ -477,7 +477,7 @@ function rankColor(rank: number, total: number): string {
 const LegendChip = ({ color, label }: { color: string; label: string }) => (
   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
     <View style={{ width: 12, height: 12, borderRadius: 3, backgroundColor: color }} />
-    <Text style={{ fontSize: 11, color: colors.textSecondary, fontWeight: '700' }}>{label}</Text>
+    <Text style={{ fontSize: 11, color: colors.textSecondary, fontWeight: '500' }}>{label}</Text>
   </View>
 );
 
@@ -511,12 +511,12 @@ function DailyEntryModal({ open, onClose, employees, onSaved }: {
     <Modal visible={open} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <View style={styles.modalHeader}>
-          <Text style={[font.h3, { color: colors.white }]}>Daily KPIs</Text>
-          <TouchableOpacity onPress={onClose} testID="close-entry"><Ionicons name="close" size={26} color={colors.white} /></TouchableOpacity>
+          <Text style={[font.h3, { color: colors.onFill }]}>Daily KPIs</Text>
+          <TouchableOpacity onPress={onClose} testID="close-entry"><Ionicons name="close" size={26} color={colors.onFill} /></TouchableOpacity>
         </View>
         <ScreenWrap>
           <Input label="Date" value={date} onChangeText={setDate} testID="entry-date" />
-          <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '700' }}>
+          <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '500' }}>
             Enter Sale ₹ · Bills · Qty for each staff. Blank rows are skipped. ASP/ATV/UPT auto-calculated.
           </Text>
           {employees.map(e => {
@@ -534,7 +534,7 @@ function DailyEntryModal({ open, onClose, employees, onSaved }: {
                   <View style={{ flex: 1 }}><Input label="Qty" value={r.qty} onChangeText={v => set(e.id, 'qty', v)} keyboardType="numeric" testID={`entry-qty-${e.id}`} /></View>
                 </View>
                 {(sale > 0 || bill > 0 || qty > 0) && (
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#FFF9E6', padding: 10, borderRadius: 8, marginTop: 4 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#F5F5F5', padding: 10, borderRadius: 8, marginTop: 4 }}>
                     <Text style={styles.calc}>ASP ₹{fmt(a.asp)}</Text>
                     <Text style={styles.calc}>ATV ₹{fmt(a.atv)}</Text>
                     <Text style={styles.calc}>UPT {fmtDec(a.upt, 2)}</Text>
@@ -575,8 +575,8 @@ function ManageEmployeesModal({ open, onClose, employees }: { open: boolean; onC
     <Modal visible={open} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <View style={styles.modalHeader}>
-          <Text style={[font.h3, { color: colors.white }]}>Manage Staff</Text>
-          <TouchableOpacity onPress={onClose} testID="close-manage"><Ionicons name="close" size={26} color={colors.white} /></TouchableOpacity>
+          <Text style={[font.h3, { color: colors.onFill }]}>Manage Staff</Text>
+          <TouchableOpacity onPress={onClose} testID="close-manage"><Ionicons name="close" size={26} color={colors.onFill} /></TouchableOpacity>
         </View>
         <ScreenWrap>
           <Card>
@@ -591,7 +591,7 @@ function ManageEmployeesModal({ open, onClose, employees }: { open: boolean; onC
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <View style={{ flex: 1 }}>
                   <Text style={[font.h3, { color: colors.navy }]}>{e.name}</Text>
-                  <Text style={{ color: e.active ? colors.npsGreen : colors.textMuted, fontSize: 12, fontWeight: '700' }}>{e.active ? 'ACTIVE' : 'INACTIVE'}</Text>
+                  <Text style={{ color: e.active ? colors.npsGreen : colors.textMuted, fontSize: 12, fontWeight: '500' }}>{e.active ? 'ACTIVE' : 'INACTIVE'}</Text>
                 </View>
                 <TouchableOpacity onPress={() => toggle(e)} testID={`emp-toggle-${e.id}`} style={styles.iconBtn}>
                   <Ionicons name={e.active ? 'pause' : 'play'} size={18} color={colors.navy} />
@@ -656,11 +656,11 @@ function LFLModal({ open, initial, onClose, onSaved }: {
 const styles = StyleSheet.create({
   kpiTable: { borderWidth: 1, borderColor: colors.borderLight, borderRadius: 10, overflow: 'hidden', marginTop: 10 },
   quickChip: { backgroundColor: colors.white, borderWidth: 1, borderColor: colors.navy, paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill },
-  quickChipText: { color: colors.navy, fontWeight: '700', fontSize: 12 },
-  calc: { fontSize: 12, fontWeight: '800', color: colors.navy },
-  modalHeader: { backgroundColor: colors.navy, paddingTop: 50, paddingBottom: 16, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  quickChipText: { color: colors.navy, fontWeight: '500', fontSize: 12 },
+  calc: { fontSize: 12, fontWeight: '500', color: colors.navy },
+  modalHeader: { backgroundColor: colors.fill, paddingTop: 50, paddingBottom: 16, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   iconBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.bg, alignItems: 'center', justifyContent: 'center' },
-  overlay: { flex: 1, backgroundColor: 'rgba(15,26,48,0.6)', justifyContent: 'center', padding: 20 },
+  overlay: { flex: 1, backgroundColor: 'rgba(17,17,17,0.6)', justifyContent: 'center', padding: 20 },
   dialog: { backgroundColor: colors.white, borderRadius: radius.lg, padding: 20, gap: 12, ...shadow.elevated },
   legend: {
     flexDirection: 'row', flexWrap: 'wrap', gap: 14, marginTop: 12,
@@ -674,7 +674,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.md, padding: 10, backgroundColor: colors.white,
   },
   addBtn: {
-    width: 30, height: 30, borderRadius: 15, backgroundColor: colors.red,
+    width: 30, height: 30, borderRadius: 15, backgroundColor: colors.fill,
     alignItems: 'center', justifyContent: 'center',
   },
   bigBillRow: {
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1, borderBottomColor: colors.borderLight,
   },
   bbAmount: {
-    backgroundColor: colors.gold, paddingHorizontal: 10, paddingVertical: 6,
+    backgroundColor: colors.fill, paddingHorizontal: 10, paddingVertical: 6,
     borderRadius: radius.md, minWidth: 100, alignItems: 'center',
   },
   empChip: {

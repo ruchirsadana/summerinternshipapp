@@ -6,26 +6,37 @@ type Mode = 'light' | 'dark';
 const KEY = 'th.themeMode';
 
 const LIGHT = {
-  navy: '#1B2A4A', navyDark: '#0F1A30', red: '#C8102E', white: '#FFFFFF',
-  bg: '#F6F7FB', cardBg: '#FFFFFF',
-  textPrimary: '#111827', textSecondary: '#6B7280', textMuted: '#9CA3AF',
-  border: '#E5E7EB', borderLight: '#F1F3F6',
-  gold: '#D4AF37', cream: '#FDFBF7', silver: '#9CA3AF', bronze: '#B98455', platinum: '#6B7A99',
+  navy: '#111111', navyDark: '#111111', red: '#111111', white: '#FFFFFF',
+  bg: '#FFFFFF', cardBg: '#FFFFFF',
+  textPrimary: '#111111', textSecondary: '#707072', textMuted: '#9E9EA0',
+  border: '#E5E5E5', borderLight: '#F5F5F5',
+  gold: '#3A3A3C', cream: '#FFFFFF', silver: '#9E9EA0', bronze: '#707072', platinum: '#111111',
   npsRed: '#E53935', npsYellow: '#F5A623', npsGreen: '#2E8B57',
-  success: '#059669', warning: '#D97706',
-  chart: ['#1B2A4A', '#C8102E', '#D4AF37', '#6B7280', '#2E8B57', '#F5A623'],
+  success: '#2E8B57', warning: '#D97706',
+  chart: ['#111111', '#707072', '#9E9EA0', '#3A3A3C', '#C7C7C9', '#5A5A5C'],
 };
 
 const DARK = {
-  navy: '#F5F7FB', navyDark: '#FFFFFF', red: '#F87171', white: '#0B1220',
-  bg: '#0B1220', cardBg: '#1A2236',
-  textPrimary: '#F8FAFC', textSecondary: '#D1D5DB', textMuted: '#9CA3AF',
-  border: '#2A3348', borderLight: '#222B3E',
-  gold: '#F5C94D', cream: '#1E2739', silver: '#C0C8DA', bronze: '#E8A979', platinum: '#B6C1DA',
+  navy: '#F5F5F5', navyDark: '#FFFFFF', red: '#F5F5F5', white: '#111111',
+  bg: '#000000', cardBg: '#FFD700',
+  textPrimary: '#FFFFFF', textSecondary: '#B4B4B6', textMuted: '#9E9EA0',
+  border: '#2C2C2E', borderLight: '#1C1C1E',
+  gold: '#D4D4D6', cream: '#1C1C1E', silver: '#B4B4B6', bronze: '#9E9EA0', platinum: '#FFFFFF',
   npsRed: '#F87171', npsYellow: '#FBBF24', npsGreen: '#34D399',
   success: '#34D399', warning: '#F59E0B',
-  chart: ['#F5F7FB', '#F87171', '#F5C94D', '#D1D5DB', '#34D399', '#FBBF24'],
+  chart: ['#F5F5F5', '#9E9EA0', '#707072', '#D4D4D6', '#3A3A3C', '#5A5A5C'],
 };
+
+// In dark mode every filled surface (cards, obsidian fills) turns gold; content on gold uses dark ink.
+const DARK_FILL = '#FFD700';
+const ON_GOLD = '#0A0A0A';
+const ON_GOLD_MUTED = '#4A4000';
+// Light ink colours (dark palette) that must flip back to dark when sitting on gold
+const LIGHT_INK: [number, number, number, string][] = [
+  [255, 255, 255, '#0A0A0A'], [245, 245, 245, '#0A0A0A'], [212, 212, 214, '#0A0A0A'],
+  [180, 180, 182, '#4A4000'], [158, 158, 160, '#4A4000'], [58, 58, 60, '#0A0A0A'], [17, 17, 17, '#0A0A0A'],
+];
+const GOLD_INLINE = ['[style*="background-color: rgb(255, 215, 0)"]', '[style*="background-color: rgb(17, 17, 17)"]'];
 
 type Ctx = { mode: Mode; colors: typeof LIGHT; toggle: () => void };
 const ThemeCtx = createContext<Ctx>({ mode: 'light', colors: LIGHT, toggle: () => {} });
@@ -38,62 +49,34 @@ const ThemeCtx = createContext<Ctx>({ mode: 'light', colors: LIGHT, toggle: () =
 // Mappings: rgba(r,g,b,a) string -> dark replacement. Cover common forms.
 type ColorMap = Record<string, string>;
 
-const BG_MAP: ColorMap = {
-  'rgba(255,255,255,1.00)': DARK.cardBg,     // colors.white / cardBg
-  'rgb(255,255,255)': DARK.cardBg,
-  '#ffffff': DARK.cardBg,
-  '#fff': DARK.cardBg,
-  'rgba(246,247,251,1.00)': DARK.bg,         // colors.bg
-  'rgb(246,247,251)': DARK.bg,
-  '#f6f7fb': DARK.bg,
-  'rgba(241,243,246,1.00)': DARK.borderLight, // borderLight
-  'rgb(241,243,246)': DARK.borderLight,
-  '#f1f3f6': DARK.borderLight,
-  'rgba(249,250,251,1.00)': DARK.borderLight, // #F9FAFB
-  'rgb(249,250,251)': DARK.borderLight,
-  '#f9fafb': DARK.borderLight,
-  'rgba(245,247,252,1.00)': DARK.borderLight, // #F5F7FC (radio active bg)
-  'rgb(245,247,252)': DARK.borderLight,
-  '#f5f7fc': DARK.borderLight,
-  'rgba(253,251,247,1.00)': DARK.cardBg,      // cream #FDFBF7
-  'rgb(253,251,247)': DARK.cardBg,
-  '#fdfbf7': DARK.cardBg,
-  'rgba(232,238,248,1.00)': DARK.borderLight, // Performance scorecard highlights
-  'rgba(255,249,230,1.00)': DARK.borderLight,
-  'rgba(232,245,233,1.00)': DARK.borderLight,
-  'rgba(254,226,226,1.00)': DARK.borderLight, // pale red bg
-  'rgba(243,244,246,1.00)': DARK.borderLight, // #F3F4F6
+/** Build every textual form RN Web may emit for an rgb triple. */
+const forms = (r: number, g: number, b: number, hex: string) =>
+  [`rgba(${r},${g},${b},1.00)`, `rgba(${r},${g},${b},1)`, `rgb(${r},${g},${b})`, hex.toLowerCase()];
+const mapOf = (pairs: [string[], string][]): ColorMap => {
+  const out: ColorMap = {};
+  for (const [keys, v] of pairs) for (const k of keys) out[k] = v;
+  return out;
 };
 
-const TEXT_MAP: ColorMap = {
-  'rgba(17,24,39,1.00)': DARK.textPrimary,   // #111827
-  'rgb(17,24,39)': DARK.textPrimary,
-  '#111827': DARK.textPrimary,
-  'rgba(107,114,128,1.00)': DARK.textSecondary, // #6B7280
-  'rgb(107,114,128)': DARK.textSecondary,
-  '#6b7280': DARK.textSecondary,
-  'rgba(27,42,74,1.00)': DARK.navy,          // #1B2A4A
-  'rgb(27,42,74)': DARK.navy,
-  '#1b2a4a': DARK.navy,
-  'rgba(15,26,48,1.00)': DARK.navy,          // #0F1A30
-  'rgb(15,26,48)': DARK.navy,
-  '#0f1a30': DARK.navy,
-  'rgba(170,181,206,1.00)': DARK.textSecondary, // #AAB5CE hero subtitle
-  'rgb(170,181,206)': DARK.textSecondary,
-  '#aab5ce': DARK.textSecondary,
-  'rgba(156,163,175,1.00)': DARK.textMuted,
-  'rgb(156,163,175)': DARK.textMuted,
-  '#9ca3af': DARK.textMuted,
-};
+const BG_MAP: ColorMap = mapOf([
+  [[...forms(255, 255, 255, '#ffffff'), '#fff'], DARK.bg],   // paper white page / cards
+  [forms(245, 245, 245, '#f5f5f5'), DARK.borderLight],          // soft mist
+  [forms(229, 229, 229, '#e5e5e5'), DARK.border],               // concrete gray (tracks)
+  [forms(17, 17, 17, '#111111'), DARK_FILL],                    // obsidian fills
+  [forms(58, 58, 60, '#3a3a3c'), '#48484A'],
+]);
 
-const BORDER_MAP: ColorMap = {
-  'rgba(229,231,235,1.00)': DARK.border,     // #E5E7EB
-  'rgb(229,231,235)': DARK.border,
-  '#e5e7eb': DARK.border,
-  'rgba(241,243,246,1.00)': DARK.border,
-  'rgb(241,243,246)': DARK.border,
-  '#f1f3f6': DARK.border,
-};
+const TEXT_MAP: ColorMap = mapOf([
+  [forms(17, 17, 17, '#111111'), DARK.textPrimary],
+  [forms(58, 58, 60, '#3a3a3c'), DARK.gold],
+  [forms(112, 112, 114, '#707072'), DARK.textSecondary],
+]);
+
+const BORDER_MAP: ColorMap = mapOf([
+  [forms(229, 229, 229, '#e5e5e5'), DARK.border],
+  [forms(245, 245, 245, '#f5f5f5'), DARK.border],
+  [forms(17, 17, 17, '#111111'), '#F5F5F5'],
+]);
 
 const STYLE_ID = 'th-dark-style';
 
@@ -112,6 +95,11 @@ function buildClassOverrides(): string {
   if (!sheet) return '';
   const css = sheet.textContent || '';
   const rules: string[] = [];
+  const goldSel: string[] = [...GOLD_INLINE];
+  const textCls: [string, string][] = [];   // [class, ink to use on gold]
+  const inkMap: ColorMap = {};
+  for (const [r, g, b, ink] of LIGHT_INK) for (const k of [`rgba(${r},${g},${b},1.00)`, `rgba(${r},${g},${b},1)`, `rgb(${r},${g},${b})`]) inkMap[k] = ink;
+  const surfaceCls: string[] = [];          // white / mist classes that sit on top of gold
 
   // Match rules like `.r-someProp-hash{prop:value;}`
   const re = /\.([a-zA-Z0-9_-]+)\{([^}]*)\}/g;
@@ -124,12 +112,15 @@ function buildClassOverrides(): string {
     if (bg) {
       const v = normColor(bg[1]);
       if (BG_MAP[v]) rules.push(`.${cls}{background-color:${BG_MAP[v]} !important;}`);
+      if (v.startsWith('rgba(255,215,0') || v === '#ffd700' || BG_MAP[v] === DARK_FILL) goldSel.push(`.${cls}`);
+      if (BG_MAP[v] === DARK.bg || BG_MAP[v] === DARK.borderLight) surfaceCls.push(cls);
     }
     // color (text)
     const col = /(?:^|[^-])color:([^;]+);?/i.exec(body);
     if (col) {
       const v = normColor(col[1]);
-      if (TEXT_MAP[v]) rules.push(`.${cls}{color:${TEXT_MAP[v]} !important;}`);
+      if (TEXT_MAP[v]) { rules.push(`.${cls}{color:${TEXT_MAP[v]} !important;}`); textCls.push([cls, TEXT_MAP[v] === DARK.textSecondary ? ON_GOLD_MUTED : ON_GOLD]); }
+      else if (inkMap[v]) textCls.push([cls, inkMap[v]]);
     }
     // border (any side) color
     const bd = /border(?:-(?:top|right|bottom|left))?-color:([^;]+);?/i.exec(body);
@@ -138,7 +129,23 @@ function buildClassOverrides(): string {
       if (BORDER_MAP[v]) rules.push(`.${cls}{border-color:${BORDER_MAP[v]} !important;}`);
     }
   }
+  // Content placed on gold surfaces keeps dark ink + translucent inner surfaces
+  for (const g of goldSel) {
+    for (const [cls, ink] of textCls) rules.push(`${g} .${cls}{color:${ink} !important;}`);
+    for (const cls of surfaceCls) rules.push(`${g} .${cls}{background-color:rgba(0,0,0,0.08) !important;}`);
+  }
   return rules.join('\n');
+}
+
+/** Inline-style versions of the "content on gold" rules. */
+function goldInlineCss(): string {
+  return GOLD_INLINE.map(g => `
+${g} [style*="color: rgb(17, 17, 17)"], ${g}[style*="color: rgb(17, 17, 17)"] { color: ${ON_GOLD} !important; }
+${g} [style*="color: rgb(112, 112, 114)"] { color: ${ON_GOLD_MUTED} !important; }
+${LIGHT_INK.map(([r, gg, b, ink]) => `${g} [style*="color: rgb(${r}, ${gg}, ${b})"]:not([style*="background-color: rgb(${r}, ${gg}, ${b})"]) { color: ${ink} !important; }`).join('\n')}
+${g} [style*="background-color: rgb(255, 255, 255)"], ${g} [style*="background-color: rgb(245, 245, 245)"] { background-color: rgba(0,0,0,0.08) !important; }
+${g} input, ${g} textarea { color: ${ON_GOLD} !important; background-color: rgba(255,255,255,0.35) !important; }
+${g} input::placeholder, ${g} textarea::placeholder { color: ${ON_GOLD_MUTED} !important; }`).join('\n');
 }
 
 function buildDarkCss(): string {
@@ -153,28 +160,23 @@ body { color-scheme: dark; }
 [style*="background-color:#FFFFFF"],
 [style*="background-color: #FFFFFF"],
 [style*="background-color:#fff"],
-[style*="background-color: #fff"] { background-color: ${DARK.cardBg} !important; }
+[style*="background-color: #fff"] { background-color: ${DARK.bg} !important; }
 
-[style*="background-color: rgb(246, 247, 251)"],
-[style*="background-color:rgb(246,247,251)"] { background-color: ${DARK.bg} !important; }
+[style*="background-color: rgb(245, 245, 245)"] { background-color: ${DARK.borderLight} !important; }
+[style*="background-color: rgb(229, 229, 229)"] { background-color: ${DARK.border} !important; }
+[style*="background-color: rgb(17, 17, 17)"] { background-color: ${DARK_FILL} !important; }
 
-[style*="background-color: rgb(241, 243, 246)"],
-[style*="background-color: rgb(249, 250, 251)"],
-[style*="background-color: rgb(245, 247, 252)"] { background-color: ${DARK.borderLight} !important; }
+[style*="color: rgb(17, 17, 17)"]:not([style*="background-color: rgb(17, 17, 17)"]) { color: ${DARK.textPrimary} !important; }
+[style*="color: rgb(112, 112, 114)"] { color: ${DARK.textSecondary} !important; }
+[style*="color: rgb(58, 58, 60)"] { color: ${DARK.gold} !important; }
 
-[style*="color: rgb(17, 24, 39)"] { color: ${DARK.textPrimary} !important; }
-[style*="color: rgb(107, 114, 128)"] { color: ${DARK.textSecondary} !important; }
-[style*="color: rgb(156, 163, 175)"] { color: ${DARK.textMuted} !important; }
-[style*="color: rgb(27, 42, 74)"]  { color: ${DARK.navy} !important; }
-[style*="color: rgb(15, 26, 48)"]  { color: ${DARK.navy} !important; }
-[style*="color: rgb(170, 181, 206)"] { color: ${DARK.textSecondary} !important; }
+[style*="border-color: rgb(229, 229, 229)"],
+[style*="border-color: rgb(245, 245, 245)"] { border-color: ${DARK.border} !important; }
+[style*="border-top-color: rgb(229, 229, 229)"] { border-top-color: ${DARK.border} !important; }
+[style*="border-bottom-color: rgb(229, 229, 229)"] { border-bottom-color: ${DARK.border} !important; }
 
-[style*="border-color: rgb(229, 231, 235)"],
-[style*="border-color: rgb(241, 243, 246)"] { border-color: ${DARK.border} !important; }
-[style*="border-top-color: rgb(229, 231, 235)"] { border-top-color: ${DARK.border} !important; }
-[style*="border-bottom-color: rgb(229, 231, 235)"] { border-bottom-color: ${DARK.border} !important; }
-
-input, textarea, select { color: ${DARK.textPrimary} !important; background-color: ${DARK.cardBg} !important; }
+input, textarea, select { color: ${DARK.textPrimary} !important; background-color: ${DARK.borderLight} !important; }
+${goldInlineCss()}
 input::placeholder, textarea::placeholder { color: ${DARK.textMuted} !important; }
 
 /* Class-name based overrides (RN Web StyleSheet.create atomic classes) */

@@ -273,3 +273,43 @@ export interface JogPromoEntry {
   notes: string;
 }
 export const JOG_SLAB_AMOUNTS = { slab1: 7999, slab2: 13999, slab3: 24999 } as const;
+
+/* ---------- Personal SFA (Sales Force Automation) ---------- */
+export const SFA_STAGES = ['Prospect', 'Contacted', 'Trial', 'Won', 'Lost'] as const;
+export type SfaStage = typeof SFA_STAGES[number];
+/** Probability used for the weighted forecast */
+export const SFA_STAGE_WEIGHT: Record<SfaStage, number> = { Prospect: 0.1, Contacted: 0.3, Trial: 0.6, Won: 1, Lost: 0 };
+
+export interface SfaDeal {
+  id: string;
+  createdAt: string;
+  title: string;          // e.g. "Wedding wardrobe – 4 shirts"
+  contactName: string;
+  phone: string;
+  value: number;          // ₹ expected
+  stage: SfaStage;
+  followUp: string;       // YYYY-MM-DD or ''
+  notes: string;
+  closedAt?: string;      // ISO when moved to Won/Lost
+}
+
+export interface SfaTask {
+  id: string;
+  createdAt: string;
+  title: string;
+  due: string;            // YYYY-MM-DD
+  done: boolean;
+  contactName: string;
+  priority: 'High' | 'Normal';
+}
+
+export const SFA_ACTIVITY_TYPES = ['Call', 'WhatsApp', 'Visit', 'Walk-in', 'Email'] as const;
+export type SfaActivityType = typeof SFA_ACTIVITY_TYPES[number];
+
+export interface SfaActivity {
+  id: string;
+  createdAt: string;      // ISO timestamp
+  type: SfaActivityType;
+  contactName: string;
+  note: string;
+}

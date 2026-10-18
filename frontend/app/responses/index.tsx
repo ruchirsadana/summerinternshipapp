@@ -39,14 +39,14 @@ export default function ResponsesList() {
         <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
           {AGE_FILTERS.map(f => (
             <TouchableOpacity key={f} testID={`age-filter-${f}`} onPress={() => setAgeF(f)} style={[styles.pill, ageF === f && styles.pillActive]}>
-              <Text style={[styles.pillText, ageF === f && { color: colors.white }]}>{f}</Text>
+              <Text style={[styles.pillText, ageF === f && { color: colors.onFill }]}>{f}</Text>
             </TouchableOpacity>
           ))}
         </View>
         <View style={{ flexDirection: 'row', gap: 6, flexWrap: 'wrap' }}>
           {NPS_FILTERS.map(f => (
             <TouchableOpacity key={f.label} testID={`nps-filter-${f.label}`} onPress={() => setNpsF(f)} style={[styles.pill, npsF.label === f.label && styles.pillActive]}>
-              <Text style={[styles.pillText, npsF.label === f.label && { color: colors.white }]}>{f.label}</Text>
+              <Text style={[styles.pillText, npsF.label === f.label && { color: colors.onFill }]}>{f.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -64,7 +64,7 @@ export default function ResponsesList() {
             style={styles.row}
           >
             <View style={[styles.npsBadge, { backgroundColor: npsColor(item.nps) }]}>
-              <Text style={{ color: colors.white, fontWeight: '800', fontSize: 18 }}>{item.nps}</Text>
+              <Text style={{ color: colors.white, fontWeight: '500', fontSize: 18 }}>{item.nps}</Text>
             </View>
             <View style={{ flex: 1 }}>
               <Text style={[font.h3, { color: colors.navy }]}>{item.id}</Text>
@@ -82,8 +82,8 @@ export default function ResponsesList() {
 
 const styles = StyleSheet.create({
   pill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.border },
-  pillActive: { backgroundColor: colors.navy, borderColor: colors.navy },
-  pillText: { fontSize: 12, fontWeight: '700', color: colors.textSecondary },
+  pillActive: { backgroundColor: colors.fill, borderColor: colors.fill },
+  pillText: { fontSize: 12, fontWeight: '500', color: colors.textSecondary },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.white, padding: 14, borderRadius: radius.lg, ...shadow.card },
   npsBadge: { width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center' },
 });

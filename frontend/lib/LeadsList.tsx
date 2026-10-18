@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, Alert, Animated, Platf
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
-import { colors, font, spacing, radius, shadow, tierColor } from '../../lib/theme';
-import { Card, ScreenWrap, PrimaryButton, Input, RadioGroup, CheckboxGroup, SectionTitle, Chip, EmptyState } from '../../lib/ui';
-import { store } from '../../lib/storage';
-import type { Customer, AgeGroup, SpendBracket } from '../../lib/types';
+import { colors, font, spacing, radius, shadow, tierColor } from './theme';
+import { Card, ScreenWrap, PrimaryButton, Input, RadioGroup, CheckboxGroup, SectionTitle, Chip, EmptyState } from './ui';
+import { store } from './storage';
+import type { Customer, AgeGroup, SpendBracket } from './types';
 
 const AGE_OPTIONS = ['18-24', '25-34', '35-44', '45+'] as const;
 const SPEND_OPTIONS = ['Under ₹3,000', '₹3,000 – ₹8,000', '₹8,000 – ₹15,000', 'Above ₹15,000'] as const;
@@ -99,7 +99,7 @@ export default function Customers() {
             style={styles.deleteBtn}
             activeOpacity={0.8}
           >
-            <Ionicons name="trash" size={22} color={colors.white} />
+            <Ionicons name="trash" size={22} color={colors.onFill} />
             <Text style={styles.deleteBtnText}>Delete</Text>
           </TouchableOpacity>
         </Animated.View>
@@ -116,10 +116,10 @@ export default function Customers() {
           <TouchableOpacity
             testID="birthday-filter-toggle"
             onPress={() => setBirthdayFilter(v => !v)}
-            style={[styles.filterBtn, birthdayFilter && { backgroundColor: colors.red }]}
+            style={[styles.filterBtn, birthdayFilter && { backgroundColor: colors.fill }]}
           >
-            <Ionicons name="gift" size={18} color={birthdayFilter ? colors.white : colors.red} />
-            <Text style={{ fontSize: 11, fontWeight: '700', color: birthdayFilter ? colors.white : colors.red }}>{thisMonth}</Text>
+            <Ionicons name="gift" size={18} color={birthdayFilter ? colors.onFill : colors.red} />
+            <Text style={{ fontSize: 11, fontWeight: '500', color: birthdayFilter ? colors.onFill : colors.red }}>{thisMonth}</Text>
           </TouchableOpacity>
         </View>
 
@@ -131,7 +131,7 @@ export default function Customers() {
             {TIER_ORDER.map(t => (
               <View key={t} style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 <View style={{ width: 14, height: 14, borderRadius: 7, backgroundColor: tierColor(t) }} />
-                <Text style={{ fontSize: 12, fontWeight: '700', color: colors.navy }}>{t}</Text>
+                <Text style={{ fontSize: 12, fontWeight: '500', color: colors.navy }}>{t}</Text>
                 <Text style={{ fontSize: 11, color: colors.textSecondary }}>· {tierSubtitle[t]}</Text>
               </View>
             ))}
@@ -207,14 +207,14 @@ function CustomerRow({
       <Card testID={`customer-${c.id}`}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <View style={[styles.tierDot, { backgroundColor: tierColor(t) }]}>
-            <Text style={{ color: colors.white, fontWeight: '800', fontSize: 10 }}>{t[0]}</Text>
+            <Text style={{ color: colors.white, fontWeight: '500', fontSize: 10 }}>{t[0]}</Text>
           </View>
           <View style={{ flex: 1 }}>
             <Text style={[font.h3, { color: colors.navy }]}>{c.name}</Text>
             <Text style={{ color: colors.textSecondary, fontSize: 13 }}>
               **** {c.phone.slice(-4)} · {c.ageGroup || '—'} · {c.purchaseCount} visit{c.purchaseCount !== 1 ? 's' : ''}
             </Text>
-            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '800', marginTop: 2 }}>
+            <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '500', marginTop: 2 }}>
               ₹{(c.totalSpend || 0).toLocaleString('en-IN')} lifetime
             </Text>
             <View style={{ flexDirection: 'row', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
@@ -280,8 +280,8 @@ function AddCustomerModal({ open, onClose, onSaved }: { open: boolean; onClose: 
     <Modal visible={open} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <View style={styles.modalHeader}>
-          <Text style={[font.h3, { color: colors.white }]}>Add Customer</Text>
-          <TouchableOpacity onPress={onClose} testID="close-customer-modal"><Ionicons name="close" size={26} color={colors.white} /></TouchableOpacity>
+          <Text style={[font.h3, { color: colors.onFill }]}>Add Customer</Text>
+          <TouchableOpacity onPress={onClose} testID="close-customer-modal"><Ionicons name="close" size={26} color={colors.onFill} /></TouchableOpacity>
         </View>
         <ScreenWrap>
           <Input label="Name" value={name} onChangeText={setName} testID="cust-name" />
@@ -299,10 +299,10 @@ function AddCustomerModal({ open, onClose, onSaved }: { open: boolean; onClose: 
               <TouchableOpacity
                 key={m}
                 onPress={() => setBirthday(m)}
-                style={[styles.monthChip, birthday === m && { backgroundColor: colors.navy }]}
+                style={[styles.monthChip, birthday === m && { backgroundColor: colors.fill }]}
                 testID={`cust-bday-${m}`}
               >
-                <Text style={{ color: birthday === m ? colors.white : colors.navy, fontWeight: '700' }}>{m}</Text>
+                <Text style={{ color: birthday === m ? colors.onFill : colors.navy, fontWeight: '500' }}>{m}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -320,18 +320,18 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', gap: 2, backgroundColor: colors.white,
   },
   tierDot: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  modalHeader: { backgroundColor: colors.navy, paddingTop: 50, paddingBottom: 16, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  fieldLabel: { fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 4, marginBottom: 4 },
+  modalHeader: { backgroundColor: colors.fill, paddingTop: 50, paddingBottom: 16, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  fieldLabel: { fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 4, marginBottom: 4 },
   monthChip: { borderWidth: 1, borderColor: colors.navy, paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill, backgroundColor: colors.white },
-  overlay: { flex: 1, backgroundColor: 'rgba(15,26,48,0.6)', justifyContent: 'center', padding: 24 },
+  overlay: { flex: 1, backgroundColor: 'rgba(17,17,17,0.6)', justifyContent: 'center', padding: 24 },
   dialog: { backgroundColor: colors.white, borderRadius: radius.lg, padding: 20, gap: 12, ...shadow.elevated },
   deleteAction: {
     width: 90, marginLeft: 8, justifyContent: 'center', alignItems: 'stretch',
   },
   deleteBtn: {
-    flex: 1, backgroundColor: colors.red, borderRadius: radius.lg,
+    flex: 1, backgroundColor: colors.fill, borderRadius: radius.lg,
     alignItems: 'center', justifyContent: 'center', gap: 4,
   },
-  deleteBtnText: { color: colors.white, fontSize: 12, fontWeight: '800', letterSpacing: 0.5 },
-  swipeHint: { fontSize: 10, color: colors.textMuted, fontWeight: '600', letterSpacing: 0.3, marginTop: 4, textAlign: 'right' },
+  deleteBtnText: { color: colors.onFill, fontSize: 12, fontWeight: '500', letterSpacing: 0.5 },
+  swipeHint: { fontSize: 10, color: colors.textMuted, fontWeight: '500', letterSpacing: 0.3, marginTop: 4, textAlign: 'right' },
 });

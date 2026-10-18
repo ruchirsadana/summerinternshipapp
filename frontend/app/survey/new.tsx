@@ -61,7 +61,7 @@ export default function NewSurvey() {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity onPress={exitToHome} style={{ paddingHorizontal: 8 }} testID="survey-exit">
-          <Ionicons name="home" size={22} color="#FFFFFF" />
+          <Ionicons name="home-outline" size={22} color="#111111" />
         </TouchableOpacity>
       ),
     });
@@ -82,8 +82,8 @@ export default function NewSurvey() {
       <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={{ padding: spacing.md, gap: spacing.md, paddingBottom: 80 }} keyboardShouldPersistTaps="handled">
         <View style={styles.stepperRow}>
           {sectionTitles.map((t, i) => (
-            <View key={t} style={[styles.stepDot, i <= step && { backgroundColor: colors.red }]}>
-              <Text style={{ color: i <= step ? colors.white : colors.textMuted, fontWeight: '800', fontSize: 12 }}>{String.fromCharCode(65 + i)}</Text>
+            <View key={t} style={[styles.stepDot, i <= step && { backgroundColor: colors.fill }]}>
+              <Text style={{ color: i <= step ? colors.onFill : colors.textMuted, fontWeight: '500', fontSize: 12 }}>{String.fromCharCode(65 + i)}</Text>
             </View>
           ))}
         </View>
@@ -131,7 +131,7 @@ export default function NewSurvey() {
               ['prestige', 'Brand Prestige / Status'], ['inStoreExperience', 'In-Store Experience'], ['staff', 'Staff Helpfulness'],
             ] as const).map(([k, label]) => (
               <View key={k} style={{ marginBottom: 10 }}>
-                <Text style={{ color: colors.textPrimary, marginBottom: 6, fontWeight: '600' }}>{label}</Text>
+                <Text style={{ color: colors.textPrimary, marginBottom: 6, fontWeight: '500' }}>{label}</Text>
                 <StarRating value={s.ratings[k]} onChange={v => setS({ ...s, ratings: { ...s.ratings, [k]: v } })} testID={`rating-${k}`} />
               </View>
             ))}
@@ -143,7 +143,7 @@ export default function NewSurvey() {
               { key: 'ralphLauren' as const, label: 'vs. Ralph Lauren' },
             ].map(({ key, label }) => (
               <View key={key} style={{ marginBottom: 8 }}>
-                <Text style={{ color: colors.textPrimary, marginBottom: 6, fontWeight: '600' }}>{label}</Text>
+                <Text style={{ color: colors.textPrimary, marginBottom: 6, fontWeight: '500' }}>{label}</Text>
                 <RadioGroup options={COMPARISON} value={s.comparisons[key]} onChange={v => setS({ ...s, comparisons: { ...s.comparisons, [key]: v } })} testIDPrefix={`cmp-${key}`} columns={2} />
               </View>
             ))}
@@ -172,8 +172,8 @@ export default function NewSurvey() {
             <RadioGroup options={PRIOR} value={s.priorPurchase} onChange={v => setS({ ...s, priorPurchase: v })} testIDPrefix="prior" />
             <Label text={`Q16. How likely to recommend? (${s.nps}/10)`} />
             <View style={{ alignItems: 'center', paddingVertical: 8 }}>
-              <Text style={{ fontSize: 44, fontWeight: '800', color: npsColor(s.nps) }}>{s.nps}</Text>
-              <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '700', letterSpacing: 0.6 }}>
+              <Text style={{ fontSize: 44, fontWeight: '500', color: npsColor(s.nps) }}>{s.nps}</Text>
+              <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '500', letterSpacing: 0.6 }}>
                 {s.nps >= 9 ? 'PROMOTER' : s.nps >= 7 ? 'PASSIVE' : 'DETRACTOR'}
               </Text>
             </View>
@@ -210,7 +210,7 @@ export default function NewSurvey() {
 }
 
 const Label = ({ text }: { text: string }) => (
-  <Text style={{ color: colors.navy, fontWeight: '700', fontSize: 15, marginTop: 12, marginBottom: 6 }}>{text}</Text>
+  <Text style={{ color: colors.navy, fontWeight: '500', fontSize: 15, marginTop: 12, marginBottom: 6 }}>{text}</Text>
 );
 
 const styles = StyleSheet.create({

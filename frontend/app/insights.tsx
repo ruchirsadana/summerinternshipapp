@@ -82,7 +82,7 @@ export default function Insights() {
         <View key={c.id} style={[styles.insightCard, { borderLeftColor: toneColor(c.tone) }]} testID={`insight-${c.id}`}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 }}>
             <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: toneColor(c.tone) }} />
-            <Text style={{ fontSize: 11, fontWeight: '800', color: toneColor(c.tone), letterSpacing: 0.8 }}>
+            <Text style={{ fontSize: 11, fontWeight: '500', color: toneColor(c.tone), letterSpacing: 0.8 }}>
               {c.tone.toUpperCase()}
             </Text>
             {!!c.metric && <Text style={{ fontSize: 11, color: colors.textSecondary, marginLeft: 'auto' }}>{c.metric}</Text>}

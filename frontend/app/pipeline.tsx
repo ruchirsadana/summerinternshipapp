@@ -39,10 +39,10 @@ export default function Pipeline() {
 
   return (
     <ScreenWrap>
-      <Card style={{ backgroundColor: colors.navy }}>
-        <Text style={{ color: colors.gold, fontSize: 11, letterSpacing: 0.8, fontWeight: '800' }}>OPEN PIPELINE VALUE</Text>
-        <Text style={{ color: colors.white, fontSize: 32, fontWeight: '800', marginTop: 4 }}>₹{totalValue.toLocaleString('en-IN')}</Text>
-        <Text style={{ color: '#AAB5CE', fontSize: 13 }}>₹{closedValue.toLocaleString('en-IN')} closed · {list.length} leads total</Text>
+      <Card style={{ backgroundColor: colors.fill }}>
+        <Text style={{ color: colors.onFillMuted, fontSize: 11, letterSpacing: 0.8, fontWeight: '500' }}>OPEN PIPELINE VALUE</Text>
+        <Text style={{ color: colors.onFill, fontSize: 32, fontWeight: '500', marginTop: 4 }}>₹{totalValue.toLocaleString('en-IN')}</Text>
+        <Text style={{ color: colors.onFillMuted, fontSize: 13 }}>₹{closedValue.toLocaleString('en-IN')} closed · {list.length} leads total</Text>
       </Card>
 
       <Card>
@@ -50,7 +50,7 @@ export default function Pipeline() {
         <Input label="Company" value={company} onChangeText={setCompany} testID="lead-company" />
         <Input label="Contact" value={contact} onChangeText={setContact} testID="lead-contact" />
         <Input label="Designation" value={des} onChangeText={setDes} testID="lead-des" />
-        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '700' }}>Requirement</Text>
+        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '500' }}>Requirement</Text>
         <RadioGroup options={REQS} value={req} onChange={setReq} testIDPrefix="lead-req" columns={3} />
         <Input label="Estimated Value (₹)" value={val} onChangeText={setVal} keyboardType="numeric" testID="lead-val" />
         <Input label="Notes" value={notes} onChangeText={setNotes} multiline numberOfLines={2} testID="lead-notes" />
@@ -69,9 +69,9 @@ export default function Pipeline() {
                 <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{l.requirement || '—'}</Text>
               </View>
               <View style={{ alignItems: 'flex-end' }}>
-                <Text style={{ color: colors.gold, fontSize: 18, fontWeight: '800' }}>₹{l.estValue.toLocaleString('en-IN')}</Text>
+                <Text style={{ color: colors.gold, fontSize: 18, fontWeight: '500' }}>₹{l.estValue.toLocaleString('en-IN')}</Text>
                 <View style={[styles.statusBadge, { backgroundColor: l.status === 'Closed' ? colors.npsGreen : colors.navy }]}>
-                  <Text style={{ color: colors.white, fontSize: 10, fontWeight: '800' }}>{l.status.toUpperCase()}</Text>
+                  <Text style={{ color: colors.onFill, fontSize: 10, fontWeight: '500' }}>{l.status.toUpperCase()}</Text>
                 </View>
               </View>
             </View>

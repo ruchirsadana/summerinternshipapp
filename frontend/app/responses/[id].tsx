@@ -16,9 +16,9 @@ export default function ResponseDetail() {
   return (
     <ScreenWrap>
       <Card>
-        <Text style={{ fontSize: 11, letterSpacing: 0.8, color: colors.textSecondary, fontWeight: '700' }}>SURVEY ID</Text>
+        <Text style={{ fontSize: 11, letterSpacing: 0.8, color: colors.textSecondary, fontWeight: '500' }}>SURVEY ID</Text>
         <Text style={[font.h2, { color: colors.navy }]}>{survey.id}</Text>
-        {!!survey.respondentName && <Text style={{ color: colors.red, fontWeight: '700', marginTop: 2 }}>{survey.respondentName}</Text>}
+        {!!survey.respondentName && <Text style={{ color: colors.red, fontWeight: '500', marginTop: 2 }}>{survey.respondentName}</Text>}
         <Text style={{ color: colors.textSecondary, fontSize: 13 }}>{new Date(survey.createdAt).toLocaleString()}</Text>
       </Card>
 
@@ -68,8 +68,8 @@ export default function ResponseDetail() {
         <SectionTitle title="E · Loyalty" />
         <Row label="Prior purchases" value={survey.priorPurchase} />
         <View style={{ alignItems: 'center', marginVertical: 8 }}>
-          <Text style={{ fontSize: 11, letterSpacing: 0.8, color: colors.textSecondary, fontWeight: '700' }}>NPS</Text>
-          <Text style={{ fontSize: 42, fontWeight: '800', color: npsColor(survey.nps) }}>{survey.nps}</Text>
+          <Text style={{ fontSize: 11, letterSpacing: 0.8, color: colors.textSecondary, fontWeight: '500' }}>NPS</Text>
+          <Text style={{ fontSize: 42, fontWeight: '500', color: npsColor(survey.nps) }}>{survey.nps}</Text>
         </View>
         <Row label="Feedback" value={survey.feedback || '—'} />
       </Card>
@@ -79,7 +79,7 @@ export default function ResponseDetail() {
 
 const Row = ({ label, value }: { label: string; value: string }) => (
   <View style={{ flexDirection: 'row', paddingVertical: 6, borderBottomWidth: 1, borderBottomColor: colors.borderLight, gap: 12 }}>
-    <Text style={{ color: colors.textSecondary, fontWeight: '600', width: 120, fontSize: 13 }}>{label}</Text>
+    <Text style={{ color: colors.textSecondary, fontWeight: '500', width: 120, fontSize: 13 }}>{label}</Text>
     <Text style={{ color: colors.textPrimary, fontSize: 14, flex: 1 }}>{value || '—'}</Text>
   </View>
 );

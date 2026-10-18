@@ -80,7 +80,7 @@ export default function BrandVM() {
               onPress={() => setTab(t)}
               style={[styles.tabBtn, tab === t && styles.tabBtnActive]}
             >
-              <Text style={[styles.tabText, tab === t && { color: colors.white }]}>
+              <Text style={[styles.tabText, tab === t && { color: colors.onFill }]}>
                 {t === 'dashboard' ? 'Overview' : t === 'log' ? 'Logs' : t === 'scorecard' ? 'Scorecard' : 'SSPD'}
               </Text>
             </TouchableOpacity>
@@ -96,7 +96,7 @@ export default function BrandVM() {
                   <Text style={[styles.scoreNum, { color: healthScoreColor(healthScore) }]}>{healthScore}</Text>
                   <Text style={styles.scoreSub}>/ 100</Text>
                 </View>
-                <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '700', marginTop: 6 }}>
+                <Text style={{ color: colors.textSecondary, fontSize: 12, fontWeight: '500', marginTop: 6 }}>
                   {healthScore >= 80 ? 'EXCELLENT' : healthScore >= 60 ? 'HEALTHY' : healthScore >= 40 ? 'NEEDS ATTENTION' : 'CRITICAL'}
                 </Text>
               </View>
@@ -201,8 +201,8 @@ export default function BrandVM() {
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
                   {VM_ELEMENTS.map(e => (
                     <View key={e} style={styles.scoreDot}>
-                      <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: '700' }}>{e}</Text>
-                      <Text style={{ fontSize: 14, color: starColor(c.scores[e]), fontWeight: '800' }}>{c.scores[e] || '—'}</Text>
+                      <Text style={{ fontSize: 10, color: colors.textSecondary, fontWeight: '500' }}>{e}</Text>
+                      <Text style={{ fontSize: 14, color: starColor(c.scores[e]), fontWeight: '500' }}>{c.scores[e] || '—'}</Text>
                     </View>
                   ))}
                 </View>
@@ -310,8 +310,8 @@ function LogModal({ open, onClose, onSaved }: { open: boolean; onClose: () => vo
     <Modal visible={open} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <View style={styles.modalHeader}>
-          <Text style={[font.h3, { color: colors.white }]}>New VM Log</Text>
-          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.white} /></TouchableOpacity>
+          <Text style={[font.h3, { color: colors.onFill }]}>New VM Log</Text>
+          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.onFill} /></TouchableOpacity>
         </View>
         <ScreenWrap>
           <Input label="Date" value={date} onChangeText={setDate} testID="vm-date" />
@@ -322,8 +322,8 @@ function LogModal({ open, onClose, onSaved }: { open: boolean; onClose: () => vo
           <Text style={styles.label}>VM Score (1–5)</Text>
           <View style={{ flexDirection: 'row', gap: 6 }}>
             {[1, 2, 3, 4, 5].map(n => (
-              <TouchableOpacity key={n} onPress={() => setScore(n)} style={[styles.scoreChip, score === n && { backgroundColor: colors.navy }]} testID={`vm-score-${n}`}>
-                <Text style={{ fontWeight: '800', color: score === n ? colors.white : colors.navy }}>{n}</Text>
+              <TouchableOpacity key={n} onPress={() => setScore(n)} style={[styles.scoreChip, score === n && { backgroundColor: colors.fill }]} testID={`vm-score-${n}`}>
+                <Text style={{ fontWeight: '500', color: score === n ? colors.onFill : colors.navy }}>{n}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -353,7 +353,7 @@ const PhotoSlot = ({ label, uri, onPick, onClear }: { label: string; uri?: strin
     </TouchableOpacity>
     {!!uri && (
       <TouchableOpacity onPress={onClear} style={{ alignSelf: 'flex-end', marginTop: 4 }}>
-        <Text style={{ color: colors.red, fontWeight: '700', fontSize: 12 }}>Clear</Text>
+        <Text style={{ color: colors.red, fontWeight: '500', fontSize: 12 }}>Clear</Text>
       </TouchableOpacity>
     )}
   </View>
@@ -382,8 +382,8 @@ function ScorecardModal({ open, onClose, onSaved }: { open: boolean; onClose: ()
     <Modal visible={open} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <View style={styles.modalHeader}>
-          <Text style={[font.h3, { color: colors.white }]}>VM Scorecard</Text>
-          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.white} /></TouchableOpacity>
+          <Text style={[font.h3, { color: colors.onFill }]}>VM Scorecard</Text>
+          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.onFill} /></TouchableOpacity>
         </View>
         <ScreenWrap>
           <Input label="Date" value={date} onChangeText={setDate} testID="vmc-date" />
@@ -391,16 +391,16 @@ function ScorecardModal({ open, onClose, onSaved }: { open: boolean; onClose: ()
             <SectionTitle title={`Rate each element · live avg ${overall.toFixed(2)}`} subtitle="1 = Poor · 5 = Excellent" />
             {VM_ELEMENTS.map(e => (
               <View key={e} style={styles.scoreRow}>
-                <Text style={{ flex: 1, color: colors.textPrimary, fontWeight: '700' }}>{e}</Text>
+                <Text style={{ flex: 1, color: colors.textPrimary, fontWeight: '500' }}>{e}</Text>
                 <View style={{ flexDirection: 'row', gap: 4 }}>
                   {[1, 2, 3, 4, 5].map(n => (
                     <TouchableOpacity
                       key={n}
                       onPress={() => setScores(s => ({ ...s, [e]: n }))}
-                      style={[styles.scoreNumPill, scores[e] === n && { backgroundColor: colors.navy }]}
+                      style={[styles.scoreNumPill, scores[e] === n && { backgroundColor: colors.fill }]}
                       testID={`vmc-${e}-${n}`}
                     >
-                      <Text style={{ fontWeight: '800', fontSize: 12, color: scores[e] === n ? colors.white : colors.navy }}>{n}</Text>
+                      <Text style={{ fontWeight: '500', fontSize: 12, color: scores[e] === n ? colors.onFill : colors.navy }}>{n}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -436,8 +436,8 @@ function ZoneSaleModal({ open, onClose, onSaved }: { open: boolean; onClose: () 
     <Modal visible={open} animationType="slide" onRequestClose={onClose}>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
         <View style={styles.modalHeader}>
-          <Text style={[font.h3, { color: colors.white }]}>Log Zone Sale</Text>
-          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.white} /></TouchableOpacity>
+          <Text style={[font.h3, { color: colors.onFill }]}>Log Zone Sale</Text>
+          <TouchableOpacity onPress={onClose}><Ionicons name="close" size={26} color={colors.onFill} /></TouchableOpacity>
         </View>
         <ScreenWrap>
           <Input label="Date" value={date} onChangeText={setDate} testID="zs-date" />
@@ -477,15 +477,15 @@ function SqftModal({ open, current, onClose, onSaved }: {
 const styles = StyleSheet.create({
   tabBar: { flexDirection: 'row', gap: 6, backgroundColor: colors.white, padding: 4, borderRadius: radius.md, borderWidth: 1, borderColor: colors.border },
   tabBtn: { flex: 1, paddingVertical: 8, borderRadius: radius.sm, alignItems: 'center' },
-  tabBtnActive: { backgroundColor: colors.navy },
-  tabText: { color: colors.navy, fontWeight: '700', fontSize: 12 },
+  tabBtnActive: { backgroundColor: colors.fill },
+  tabText: { color: colors.navy, fontWeight: '500', fontSize: 12 },
   scoreRing: {
     width: 140, height: 140, borderRadius: 70, borderWidth: 8,
     alignItems: 'center', justifyContent: 'center',
   },
-  scoreNum: { fontSize: 48, fontWeight: '900', letterSpacing: -1 },
-  scoreSub: { fontSize: 12, fontWeight: '700', color: colors.textMuted, marginTop: -4 },
-  label: { fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 4 },
+  scoreNum: { fontSize: 48, fontWeight: '500', letterSpacing: -1 },
+  scoreSub: { fontSize: 12, fontWeight: '500', color: colors.textMuted, marginTop: -4 },
+  label: { fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 4 },
   scoreChip: {
     width: 44, height: 40, borderWidth: 1.5, borderColor: colors.navy, borderRadius: radius.md,
     alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white,
@@ -508,8 +508,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.white,
     overflow: 'hidden',
   },
-  photoLabel: { fontSize: 10, fontWeight: '800', color: colors.textMuted, letterSpacing: 0.6, marginBottom: 4 },
-  modalHeader: { backgroundColor: colors.navy, paddingTop: 50, paddingBottom: 16, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  overlay: { flex: 1, backgroundColor: 'rgba(15,26,48,0.6)', justifyContent: 'center', padding: 20 },
+  photoLabel: { fontSize: 10, fontWeight: '500', color: colors.textMuted, letterSpacing: 0.6, marginBottom: 4 },
+  modalHeader: { backgroundColor: colors.fill, paddingTop: 50, paddingBottom: 16, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  overlay: { flex: 1, backgroundColor: 'rgba(17,17,17,0.6)', justifyContent: 'center', padding: 20 },
   dialog: { backgroundColor: colors.white, borderRadius: radius.lg, padding: 20, gap: 12, ...shadow.elevated },
 });

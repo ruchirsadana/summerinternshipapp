@@ -67,8 +67,8 @@ export const DonutChart: React.FC<{
       </Svg>
       {(centerLabel || centerValue) && (
         <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center' }}>
-          {!!centerValue && <Text style={{ fontSize: 28, fontWeight: '800', color: colors.navy }}>{centerValue}</Text>}
-          {!!centerLabel && <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2, fontWeight: '600', letterSpacing: 0.6 }}>{centerLabel.toUpperCase()}</Text>}
+          {!!centerValue && <Text style={{ fontSize: 28, fontWeight: '500', color: colors.navy }}>{centerValue}</Text>}
+          {!!centerLabel && <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2, fontWeight: '500', letterSpacing: 0.6 }}>{centerLabel.toUpperCase()}</Text>}
         </View>
       )}
     </View>
@@ -125,8 +125,8 @@ export const Gauge: React.FC<{ score: number; size?: number }> = ({ score, size 
         {arc(startAngle, endAngle, fg, 14)}
       </Svg>
       <View style={{ position: 'absolute', top: size * 0.3, alignItems: 'center' }}>
-        <Text style={{ fontSize: 40, fontWeight: '800', color: fg }}>{score}</Text>
-        <Text style={{ fontSize: 11, letterSpacing: 0.8, color: colors.textSecondary, fontWeight: '700' }}>NPS SCORE</Text>
+        <Text style={{ fontSize: 40, fontWeight: '500', color: fg }}>{score}</Text>
+        <Text style={{ fontSize: 11, letterSpacing: 0.8, color: colors.textSecondary, fontWeight: '500' }}>NPS SCORE</Text>
       </View>
     </View>
   );
@@ -136,9 +136,9 @@ export const Heatmap: React.FC<{ cells: { hour: number; value: number }[]; maxVa
   ({ cells, maxValue, suffix = '%' }) => {
     const max = maxValue ?? Math.max(...cells.map(c => c.value), 1);
     const shade = (v: number) => {
-      if (max === 0) return '#E0E7FF';
+      if (max === 0) return '#F5F5F5';
       const pct = v / max;
-      const scale = ['#EEF2FF', '#C7D2FE', '#818CF8', '#4F46E5', '#1B2A4A'];
+      const scale = ['#F5F5F5', '#E5E5E5', '#9E9EA0', '#3A3A3C', '#111111'];
       const idx = Math.min(scale.length - 1, Math.floor(pct * scale.length));
       return scale[idx];
     };
@@ -146,10 +146,10 @@ export const Heatmap: React.FC<{ cells: { hour: number; value: number }[]; maxVa
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
         {cells.map(c => (
           <View key={c.hour} style={{ width: '14%', backgroundColor: shade(c.value), borderRadius: 6, padding: 6, alignItems: 'center' }}>
-            <Text style={{ fontSize: 10, color: c.value > max * 0.5 ? colors.white : colors.textSecondary, fontWeight: '700' }}>
+            <Text style={{ fontSize: 10, color: c.value > max * 0.5 ? colors.white : colors.textSecondary, fontWeight: '500' }}>
               {c.hour}:00
             </Text>
-            <Text style={{ fontSize: 13, color: c.value > max * 0.5 ? colors.white : colors.navy, fontWeight: '800' }}>
+            <Text style={{ fontSize: 13, color: c.value > max * 0.5 ? colors.white : colors.navy, fontWeight: '500' }}>
               {c.value}{suffix}
             </Text>
           </View>

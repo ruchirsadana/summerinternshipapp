@@ -40,3 +40,10 @@ A mobile-first retail intern intelligence platform for Tommy Hilfiger store floo
 
 ## Wow moment / revenue angle
 The **B2B Pipeline Tracker** surfaces total open pipeline in ₹ — the single screen an ASM opens when asking "what business impact did you create?" This is the screen that converts a survey internship into a career conversation.
+
+## Update — June 2026: Monochrome redesign + Personal SFA
+- **Design system** (from /app/DESIGN.md, Nike-style gallery): whole app restyled black/white — Obsidian #111111, Paper White, Concrete Gray #E5E5E5 hairlines, Soft Mist #F5F5F5, Steel #707072. Pill buttons (30px), sharp 0-radius cards, no shadows, weights 400/500 only. Tokens in `lib/theme.ts`; dark mode maps in `lib/themeContext.tsx`. KPI health colours (green/yellow/red) kept only for status signals.
+- **Bottom nav**: Home · Analytics · Brand VM · **SFA** (replaced Leads) · Admin.
+- **Personal SFA** (`app/(tabs)/sfa.tsx`, `lib/sfa/*`): segments Dashboard (pipeline hero, weighted forecast, win rate, won this month, tasks today/overdue, stage bars, agenda, recent activity) · Contacts (former Leads list, `lib/LeadsList.tsx`) · Deals (Prospect→Contacted→Trial→Won/Lost, value, follow-up, call/WhatsApp) · Tasks (Overdue/Today/Upcoming/Completed, priority) · Activity (Call/WhatsApp/Visit/Walk-in/Email timeline).
+- Storage keys: `th.sfaDeals`, `th.sfaTasks`, `th.sfaActivities` + `onSfaChange` bus.
+- **Chat Assistant + SFA** (`lib/sfaBrain.ts`, offline, 0 credits): "plan my day", "overdue follow-ups", "pipeline value", "top deals", "win rate", "who should I call", "recent activity", "sfa"; actions "add task … tomorrow/in 3 days/friday", "add deal <name> <amount> <what>", "log call/whatsapp <name> <note>", "done <task>", "whatsapp script for <name>". `openChat(q)` exported from chatFab.

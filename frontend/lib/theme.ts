@@ -1,26 +1,35 @@
+// Monochrome "gallery" design system (see /app/DESIGN.md).
+// Legacy key names (navy/red/gold…) are kept so every screen picks up the new palette.
 export const colors = {
-  navy: '#1B2A4A',
-  navyDark: '#0F1A30',
-  red: '#C8102E',
-  white: '#FFFFFF',
-  bg: '#F6F7FB',
+  navy: '#111111',      // Obsidian — primary text / fills
+  navyDark: '#111111',
+  red: '#111111',       // no accent colour in the UI
+  white: '#FFFFFF',     // Paper White
+  bg: '#FFFFFF',
   cardBg: '#FFFFFF',
-  textPrimary: '#111827',
-  textSecondary: '#6B7280',
-  textMuted: '#9CA3AF',
-  border: '#E5E7EB',
-  borderLight: '#F1F3F6',
-  gold: '#D4AF37',
-  cream: '#FDFBF7',
-  silver: '#9CA3AF',
-  bronze: '#B98455',
-  platinum: '#6B7A99',
+  textPrimary: '#111111',
+  textSecondary: '#707072', // Steel
+  textMuted: '#9E9EA0',     // Faint Gray
+  border: '#E5E5E5',        // Concrete Gray
+  borderLight: '#F5F5F5',   // Soft Mist
+  mist: '#F5F5F5',
+  // Gold fill for every filled surface (cards, buttons, active pills, chat) + legible ink on it.
+  // onFill shades are deliberately not in the dark-mode CSS maps so they stay dark on gold.
+  fill: '#FFD700',
+  onFill: '#0A0A0A',
+  onFillMuted: '#4A4000',
+  gold: '#3A3A3C',
+  cream: '#FFFFFF',
+  silver: '#9E9EA0',
+  bronze: '#707072',
+  platinum: '#111111',
+  // Data-status colours (kept only for KPI health signals)
   npsRed: '#E53935',
   npsYellow: '#F5A623',
   npsGreen: '#2E8B57',
-  success: '#059669',
+  success: '#2E8B57',
   warning: '#D97706',
-  chart: ['#1B2A4A', '#C8102E', '#D4AF37', '#6B7280', '#2E8B57', '#F5A623'],
+  chart: ['#111111', '#707072', '#9E9EA0', '#3A3A3C', '#C7C7C9', '#5A5A5C'],
 } as const;
 
 export const spacing = {
@@ -28,43 +37,34 @@ export const spacing = {
   sm: 8,
   md: 16,
   lg: 24,
-  xl: 32,
+  xl: 36,
   xxl: 48,
 } as const;
 
+// Cards & inputs are sharp-edged; only buttons / tags / search are pills.
 export const radius = {
-  sm: 6,
-  md: 10,
-  lg: 14,
-  xl: 20,
-  pill: 999,
+  sm: 0,
+  md: 0,
+  lg: 0,
+  xl: 0,
+  search: 24,
+  pill: 30,
 } as const;
 
 export const font = {
-  family: undefined as string | undefined, // system default for reliability; Inter fallback
-  h1: { fontSize: 28, fontWeight: '700' as const, letterSpacing: -0.5 },
-  h2: { fontSize: 22, fontWeight: '700' as const, letterSpacing: -0.3 },
-  h3: { fontSize: 18, fontWeight: '600' as const },
-  body: { fontSize: 15, fontWeight: '400' as const },
-  small: { fontSize: 13, fontWeight: '400' as const },
-  caption: { fontSize: 11, fontWeight: '600' as const, letterSpacing: 0.8 },
+  family: undefined as string | undefined,
+  h1: { fontSize: 28, fontWeight: '500' as const, letterSpacing: -0.5 },
+  h2: { fontSize: 24, fontWeight: '500' as const, letterSpacing: -0.3, lineHeight: 29 },
+  h3: { fontSize: 16, fontWeight: '500' as const },
+  body: { fontSize: 16, fontWeight: '400' as const },
+  small: { fontSize: 14, fontWeight: '400' as const },
+  caption: { fontSize: 12, fontWeight: '500' as const, letterSpacing: 0.6 },
 };
 
+// No elevation — surfaces are separated by hairline borders only.
 export const shadow = {
-  card: {
-    shadowColor: '#1B2A4A',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  elevated: {
-    shadowColor: '#1B2A4A',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 24,
-    elevation: 6,
-  },
+  card: { borderWidth: 1, borderColor: '#E5E5E5' },
+  elevated: {},
 };
 
 export const npsColor = (score: number) => {

@@ -73,7 +73,7 @@ export default function Home() {
       {/* Top strip: Mumbai on left, theme slider toggle on right */}
       <View style={styles.topStrip}>
         <View style={styles.locationChip} testID="location-chip">
-          <Ionicons name="location-sharp" size={16} color={colors.gold} />
+          <Ionicons name="location-sharp" size={16} color={colors.onFill} />
           <Text style={styles.locationText}>Mumbai</Text>
         </View>
         <View style={{ flex: 1 }} />
@@ -118,12 +118,12 @@ export default function Home() {
       <Card testID="target-card">
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
           <View>
-            <Text style={{ color: colors.textSecondary, fontSize: 11, fontWeight: '700', letterSpacing: 0.8 }}>INTERNSHIP TARGET</Text>
+            <Text style={{ color: colors.textSecondary, fontSize: 11, fontWeight: '500', letterSpacing: 0.8 }}>INTERNSHIP TARGET</Text>
             <Text style={[font.h2, { color: colors.navy, marginTop: 4 }]}>{surveys.length} / {settings ? target : '—'}</Text>
           </View>
-          <Text style={{ fontSize: 24, fontWeight: '800', color: colors.gold }}>{Math.round(progress * 100)}%</Text>
+          <Text style={{ fontSize: 24, fontWeight: '500', color: colors.gold }}>{Math.round(progress * 100)}%</Text>
         </View>
-        <ProgressBar progress={progress} color={colors.red} />
+        <ProgressBar progress={progress} />
       </Card>
 
       {/* Stat row */}
@@ -147,8 +147,8 @@ export default function Home() {
             onPress={() => router.push(link.path as any)}
             style={[styles.quickCard, { backgroundColor: t.cardBg }]}
           >
-            <View style={[styles.quickIcon, { backgroundColor: link.color }]}>
-              <Ionicons name={link.icon as any} size={22} color="#FFFFFF" />
+            <View style={[styles.quickIcon, { backgroundColor: '#F5F5F5' }]}>
+              <Ionicons name={link.icon as any} size={22} color="#111111" />
             </View>
             <Text style={[styles.quickLabel, { color: t.navy }]}>{link.label}</Text>
           </TouchableOpacity>
@@ -163,19 +163,19 @@ const QUICK_LINKS = [
   { label: 'Calculator', path: '/calculator', icon: 'calculator', color: colors.navy },
   { label: 'Brand Health', path: '/brand-health', icon: 'pulse', color: colors.navy },
   { label: 'Performance', path: '/performance', icon: 'trending-up', color: colors.gold },
-  { label: 'Dead Hours', path: '/dead-hours', icon: 'time', color: '#4F46E5' },
+  { label: 'Dead Hours', path: '/dead-hours', icon: 'time', color: '#3A3A3C' },
   { label: 'Competitive', path: '/competitive', icon: 'git-compare', color: colors.navy },
-  { label: 'Field Notes', path: '/field-notes', icon: 'book', color: '#0F766E' },
+  { label: 'Field Notes', path: '/field-notes', icon: 'book', color: '#707072' },
   { label: 'Occasion Map', path: '/occasion-mapper', icon: 'gift', color: colors.red },
   { label: 'Pipeline', path: '/pipeline', icon: 'briefcase', color: colors.navy },
-  { label: 'Presentation', path: '/presentation', icon: 'easel', color: '#4F46E5' },
+  { label: 'Presentation', path: '/presentation', icon: 'easel', color: '#3A3A3C' },
   { label: 'Export', path: '/export', icon: 'share-social', color: '#059669' },
   { label: 'Settings', path: '/settings', icon: 'settings', color: colors.textSecondary },
 ];
 
 const styles = StyleSheet.create({
   hero: {
-    backgroundColor: colors.navy, borderRadius: radius.xl, padding: spacing.lg, gap: 14,
+    backgroundColor: colors.fill, borderRadius: radius.xl, padding: spacing.lg, gap: 14,
     flexDirection: 'row', alignItems: 'center', ...shadow.elevated,
   },
   logoWrap: {
@@ -190,12 +190,10 @@ const styles = StyleSheet.create({
   iconBtn: {
     width: 38, height: 38, borderRadius: 19, backgroundColor: colors.white,
     borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center',
-    ...shadow.card,
   },
   themePill: {
     flexDirection: 'row', backgroundColor: colors.white, borderWidth: 1,
     borderColor: colors.border, borderRadius: 999, padding: 3, gap: 2,
-    ...shadow.card,
   },
   themeSide: {
     width: 32, height: 30, borderRadius: 999, alignItems: 'center', justifyContent: 'center',
@@ -206,18 +204,18 @@ const styles = StyleSheet.create({
   },
   locationChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: colors.navy, paddingHorizontal: 12, paddingVertical: 7,
+    backgroundColor: colors.fill, paddingHorizontal: 12, paddingVertical: 7,
     borderRadius: radius.pill,
   },
-  locationText: { color: colors.white, fontWeight: '700', fontSize: 12, letterSpacing: 0.3 },
-  heroSub: { color: '#AAB5CE', fontSize: 12, fontWeight: '600', letterSpacing: 1 },
-  heroTitle: { color: colors.white, fontSize: 22, fontWeight: '800', marginTop: 2, letterSpacing: -0.3 },
-  heroStore: { color: colors.gold, fontSize: 14, fontWeight: '800', marginTop: 4, letterSpacing: 0.3 },
+  locationText: { color: colors.onFill, fontWeight: '500', fontSize: 12, letterSpacing: 0.3 },
+  heroSub: { color: colors.onFillMuted, fontSize: 12, fontWeight: '500', letterSpacing: 1 },
+  heroTitle: { color: colors.onFill, fontSize: 22, fontWeight: '500', marginTop: 2, letterSpacing: -0.3 },
+  heroStore: { color: colors.onFill, fontSize: 14, fontWeight: '500', marginTop: 4, letterSpacing: 0.3 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   quickCard: {
     flexBasis: '30%' as any, flexGrow: 1, backgroundColor: colors.white, borderRadius: radius.lg,
     padding: 12, alignItems: 'center', gap: 6, ...shadow.card,
   },
   quickIcon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  quickLabel: { fontSize: 11, fontWeight: '700', color: colors.navy, textAlign: 'center' },
+  quickLabel: { fontSize: 11, fontWeight: '500', color: colors.navy, textAlign: 'center' },
 });

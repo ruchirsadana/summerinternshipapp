@@ -37,8 +37,8 @@ export default function Presentation() {
         <View style={styles.logoWrap}>
           <Image source={{ uri: TH_LOGO_URL }} style={styles.logoImg} resizeMode="cover" />
         </View>
-        <Text style={{ color: colors.white, fontSize: 24, fontWeight: '800', marginTop: 16 }}>{settings?.storeName || 'Tommy Hilfiger BKC'}</Text>
-        <Text style={{ color: colors.gold, fontSize: 13, fontWeight: '700', marginTop: 4 }}>Internship Snapshot · {settings?.internName || 'Field Intern'}</Text>
+        <Text style={{ color: colors.onFill, fontSize: 24, fontWeight: '500', marginTop: 16 }}>{settings?.storeName || 'Tommy Hilfiger BKC'}</Text>
+        <Text style={{ color: colors.onFillMuted, fontSize: 13, fontWeight: '500', marginTop: 4 }}>Internship Snapshot · {settings?.internName || 'Field Intern'}</Text>
       </View>
 
       <View style={{ flexDirection: 'row', gap: 10 }}>
@@ -79,8 +79,8 @@ export default function Presentation() {
 }
 
 const styles = StyleSheet.create({
-  hero: { backgroundColor: colors.navy, borderRadius: radius.xl, padding: 24, alignItems: 'center', ...shadow.elevated },
+  hero: { backgroundColor: colors.fill, borderRadius: radius.xl, padding: 24, alignItems: 'center', ...shadow.elevated },
   logoWrap: { width: 96, height: 96, borderRadius: 12, overflow: 'hidden', backgroundColor: colors.white, alignItems: 'center', justifyContent: 'center' },
   logoImg: { width: '150%', height: '150%' },
-  caption: { fontSize: 11, fontWeight: '800', color: colors.textSecondary, letterSpacing: 0.8 },
+  caption: { fontSize: 11, fontWeight: '500', color: colors.textSecondary, letterSpacing: 0.8 },
 });

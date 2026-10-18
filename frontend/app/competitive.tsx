@@ -46,17 +46,17 @@ export default function Competitive() {
     <ScreenWrap>
       <Card>
         <SectionTitle title="Log Competitor Visit" />
-        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 8 }}>Store</Text>
+        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 8 }}>Store</Text>
         <RadioGroup options={STORES} value={store_} onChange={setStore_} testIDPrefix="cv-store" columns={2} />
-        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 12 }}>VM Score</Text>
+        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 12 }}>VM Score</Text>
         <StarRating value={vm} onChange={setVm} testID="cv-vm" />
-        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 12 }}>Staff Score</Text>
+        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 12 }}>Staff Score</Text>
         <StarRating value={staff} onChange={setStaff} testID="cv-staff" />
-        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 12 }}>Product Range</Text>
+        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 12 }}>Product Range</Text>
         <StarRating value={range} onChange={setRange} testID="cv-range" />
-        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 12 }}>Footfall</Text>
+        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 12 }}>Footfall</Text>
         <RadioGroup options={FOOTFALL} value={ff} onChange={setFf} testIDPrefix="cv-ff" columns={3} />
-        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '700', marginTop: 12 }}>Price vs TH</Text>
+        <Text style={{ fontSize: 13, color: colors.textSecondary, fontWeight: '500', marginTop: 12 }}>Price vs TH</Text>
         <RadioGroup options={PRICE} value={pr} onChange={setPr} testIDPrefix="cv-pr" columns={3} />
         <Input label="Key Observation" value={obs} onChangeText={setObs} multiline numberOfLines={3} testID="cv-obs" />
         <PrimaryButton label="Save Visit" variant="accent" onPress={save} testID="cv-save" />

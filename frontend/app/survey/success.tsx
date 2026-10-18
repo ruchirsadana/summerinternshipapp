@@ -44,6 +44,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill, backgroundColor: colors.white, alignItems: 'center', gap: 2,
     borderWidth: 1, borderColor: colors.border,
   },
-  idCaption: { fontSize: 10, fontWeight: '800', color: colors.textSecondary, letterSpacing: 1 },
-  idValue: { fontSize: 16, fontWeight: '800', color: colors.red },
+  idCaption: { fontSize: 10, fontWeight: '500', color: colors.textSecondary, letterSpacing: 1 },
+  idValue: { fontSize: 16, fontWeight: '500', color: colors.red },
 });

@@ -151,7 +151,7 @@ export default function JogPromo() {
 }
 
 const styles = StyleSheet.create({
-  slabHdr: { fontSize: 12, color: colors.textSecondary, fontWeight: '800', letterSpacing: 0.5, marginTop: 6 },
-  rowKey: { color: colors.textSecondary, fontSize: 13, fontWeight: '700' },
-  rowVal: { color: colors.navy, fontSize: 14, fontWeight: '800' },
+  slabHdr: { fontSize: 12, color: colors.textSecondary, fontWeight: '500', letterSpacing: 0.5, marginTop: 6 },
+  rowKey: { color: colors.textSecondary, fontSize: 13, fontWeight: '500' },
+  rowVal: { color: colors.navy, fontSize: 14, fontWeight: '500' },
 });

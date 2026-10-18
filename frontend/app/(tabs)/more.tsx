@@ -11,13 +11,13 @@ const LINKS: { label: string; path: string; icon: string; color: string; desc: s
   { label: 'KPI Calculator', path: '/calculator', icon: 'calculator', color: colors.red, desc: 'ASP · ATV · UPT · LFL · Target · CLV' },
   { label: 'Performance', path: '/performance', icon: 'trending-up', color: colors.gold, desc: 'Staff KPIs · leaderboard · big bills' },
   { label: 'JOG Promo', path: '/jog-promo', icon: 'pricetag', color: colors.red, desc: 'Slab 1/2/3 redemptions · JOG sales' },
-  { label: 'Dead Hour Tracker', path: '/dead-hours', icon: 'time', color: '#4F46E5', desc: 'Hourly conversion heatmap' },
+  { label: 'Dead Hour Tracker', path: '/dead-hours', icon: 'time', color: '#3A3A3C', desc: 'Hourly conversion heatmap' },
   { label: 'Competitive Tracker', path: '/competitive', icon: 'git-compare', color: colors.navy, desc: 'Benchmark vs rivals' },
   { label: 'AI Insights Feed', path: '/insights', icon: 'sparkles', color: colors.red, desc: 'Auto-generated cards' },
   { label: 'Brand Health', path: '/brand-health', icon: 'pulse', color: colors.navy, desc: 'Weekly scorecard' },
   { label: 'Occasion Mapper', path: '/occasion-mapper', icon: 'gift', color: colors.red, desc: 'Reason → category → spend' },
-  { label: 'Field Notes', path: '/field-notes', icon: 'book', color: '#0F766E', desc: 'Captain\'s log' },
-  { label: 'Presentation Mode', path: '/presentation', icon: 'easel', color: '#4F46E5', desc: 'Clean read-only snapshot' },
+  { label: 'Field Notes', path: '/field-notes', icon: 'book', color: '#707072', desc: 'Captain\'s log' },
+  { label: 'Presentation Mode', path: '/presentation', icon: 'easel', color: '#3A3A3C', desc: 'Clean read-only snapshot' },
   { label: 'B2B Pipeline', path: '/pipeline', icon: 'briefcase', color: colors.gold, desc: 'Corporate gifting leads' },
   { label: 'Export & Reports', path: '/export', icon: 'share-social', color: '#059669', desc: 'CSV · WhatsApp · Email' },
   { label: 'Settings', path: '/settings', icon: 'settings', color: colors.textSecondary, desc: 'Name · store · target · dark mode' },
@@ -37,8 +37,8 @@ export default function More() {
           onPress={() => router.push(l.path as any)}
           style={[styles.row, { backgroundColor: t.cardBg }]}
         >
-          <View style={[styles.icon, { backgroundColor: l.color }]}>
-            <Ionicons name={l.icon as any} size={20} color={colors.white} />
+          <View style={[styles.icon, { backgroundColor: '#F5F5F5' }]}>
+            <Ionicons name={l.icon as any} size={20} color="#111111" />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={[font.h3, { color: t.navy }]}>{l.label}</Text>
@@ -67,6 +67,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1, borderTopColor: colors.borderLight, gap: 4,
   },
   // explicit indigo not in dark-mode CSS map → readable in both modes
-  creditText: { color: '#0F2D78', fontSize: 13, fontWeight: '700', letterSpacing: 0.4 },
-  creditSub: { color: '#4F5B85', fontSize: 11, fontWeight: '600', letterSpacing: 0.3 },
+  creditText: { color: '#111111', fontSize: 13, fontWeight: '500', letterSpacing: 0.4 },
+  creditSub: { color: '#707072', fontSize: 11, fontWeight: '500', letterSpacing: 0.3 },
 });
